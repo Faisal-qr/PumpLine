@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:,">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>PumpLine — Staff Console</title>
+
+  <!-- Staff CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- QR Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
+</head>
+
+<body>
+
+<div id="staff-app">
+
+  <!-- =====================================================
+       LOGIN / SIGNUP SCREEN
+  ====================================================== -->
+  <section id="screen-login">
+
+    <div class="login-card">
+
+      <!-- Brand -->
+      <div class="login-brand">
+        <div class="nozzle">⛽</div>
+
+        <div>
+          <div class="brand-title">PumpLine</div>
+          <div class="brand-subtitle">Staff Console</div>
+        </div>
+      </div>
+
+      <!-- Heading -->
+      <h1 id="auth-title">Staff Login</h1>
+
+      <p id="auth-subtitle" class="body-text">
+        Login to manage your station queue.
+      </p>
+
+
+      <!-- ================= STAFF NAME ================= -->
+
+      <div id="staff-name-wrap" class="field" style="display:none;">
+
+        <label for="staff-name">
+          Full Name
+        </label>
+
+        <input
+          id="staff-name"
+          type="text"
+          placeholder="Enter your full name"
+          autocomplete="name"
+        >
+
+      </div>
+
+
+      <!-- ================= STAFF ID ================= -->
+
+      <div id="staff-id-wrap" class="field" style="display:none;">
+
+        <label for="staff-id">
+          Staff ID
+        </label>
+
+        <input
+          id="staff-id"
+          type="text"
+          placeholder="e.g. IOC-BW-01"
+        >
+
+      </div>
+
+
+      <!-- ================= EMAIL ================= -->
+
+      <div class="field">
+
+        <label for="login-id">
+          Email
+        </label>
+
+        <input
+          id="login-id"
+          type="email"
+          placeholder="staff@example.com"
+          autocomplete="email"
+        >
+
+      </div>
+
+
+      <!-- ================= PASSWORD ================= -->
+
+      <div class="field">
+
+        <label for="login-pass">
+          Password
+        </label>
+
+        <input
+          id="login-pass"
+          type="password"
+          placeholder="Minimum 6 characters"
+          autocomplete="current-password"
+        >
+
+      </div>
+
+
+      <!-- ================= STATION ================= -->
+
+      <div
+        id="staff-station-wrap"
+        class="field"
+        style="display:none;"
+      >
+
+        <label for="staff-station-select">
+          Station
+        </label>
+
+        <select id="staff-station-select">
+
+          <option value="s1">
+            Indian Oil — Linking Road
+          </option>
+
+          <option value="s2">
+            HP Petrol Pump — Turner Road
+          </option>
+
+          <option value="s3">
+            Bharat Petroleum — SV Road
+          </option>
+
+          <option value="s4">
+            Shell — Hill Road
+          </option>
+
+          <option value="s5">
+            Reliance — Waterfield Road
+          </option>
+
+          <option value="s6">
+            Indian Oil — Carter Road
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- ================= ERROR ================= -->
+
+      <div
+        id="login-error"
+        class="login-error"
+        style="display:none;"
+      >
+        Invalid login details.
+      </div>
+
+
+      <!-- ================= BUTTONS ================= -->
+
+      <button
+        id="btn-login"
+        class="primary-btn"
+        type="button"
+      >
+        Login
+      </button>
+
+
+      <button
+        id="btn-toggle-auth"
+        class="ghost-btn"
+        type="button"
+      >
+        Create new staff account
+      </button>
+
+
+      <div class="login-hint">
+        Staff accounts are connected with Firebase Authentication.
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       STAFF APPLICATION
+  ====================================================== -->
+
+  <div id="app-shell">
+
+
+    <!-- ===================================================
+         SIDEBAR
+    ==================================================== -->
+
+    <aside class="sidebar">
+
+
+      <!-- BRAND -->
+
+      <div class="sidebar-brand">
+
+        <div class="nozzle">
+          ⛽
+        </div>
+
+        <div>
+          <div class="brand-title">
+            PumpLine
+          </div>
+
+          <div class="brand-subtitle">
+            Staff Console
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- STAFF PROFILE -->
+
+      <div class="staff-chip">
+
+        <div class="avatar">
+          S
+        </div>
+
+        <div>
+
+          <div
+            id="staff-name-display"
+            class="sc-name"
+          >
+            Staff
+          </div>
+
+          <div
+            id="staff-station"
+            class="sc-station"
+          >
+            Station
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- NAVIGATION -->
+
+      <nav class="nav-list">
+
+        <button
+          class="nav-btn is-active"
+          data-view="dashboard"
+          type="button"
+        >
+          <span>📋</span>
+          <span>Queue</span>
+        </button>
+
+
+        <button
+          class="nav-btn"
+          data-view="scan"
+          type="button"
+        >
+          <span>📷</span>
+          <span>Scan QR</span>
+        </button>
+
+
+        <button
+          class="nav-btn"
+          data-view="history"
+          type="button"
+        >
+          <span>🧾</span>
+          <span>History</span>
+        </button>
+
+      </nav>
+
+
+      <!-- LOGOUT -->
+
+      <button
+        id="staff-btn-logout"
+        class="logout-btn"
+        type="button"
+      >
+        🚪 Logout
+      </button>
+
+    </aside>
+
+
+
+    <!-- ===================================================
+         MAIN CONTENT
+    ==================================================== -->
+
+    <main class="main">
+
+
+      <!-- =================================================
+           DASHBOARD
+      ================================================== -->
+
+      <section
+        id="view-dashboard"
+        class="view active"
+      >
+
+        <div class="main-topbar">
+
+          <div>
+
+            <div class="eyebrow">
+              STAFF CONSOLE
+            </div>
+
+            <h1 id="dash-station-name">
+              Station — Queue
+            </h1>
+
+            <p class="body-text">
+              Manage customers waiting for fueling.
+            </p>
+
+          </div>
+
+
+          <button
+            id="btn-call-next"
+            class="primary-btn"
+            type="button"
+          >
+            Call Next
+          </button>
+
+        </div>
+
+
+        <!-- ================= STATS ================= -->
+
+        <div class="stat-row">
+
+          <div class="stat-card">
+
+            <div
+              id="stat-waiting"
+              class="num"
+            >
+              0
+            </div>
+
+            <div class="lbl">
+              Waiting
+            </div>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <div
+              id="stat-called"
+              class="num"
+            >
+              0
+            </div>
+
+            <div class="lbl">
+              Called
+            </div>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <div
+              id="stat-fueling"
+              class="num"
+            >
+              0
+            </div>
+
+            <div class="lbl">
+              At Pump
+            </div>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <div
+              id="stat-completed"
+              class="num"
+            >
+              0
+            </div>
+
+            <div class="lbl">
+              Completed
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ================= PUMP STATUS ================= -->
+
+        <div class="panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <div class="section-label">
+                Pump Status
+              </div>
+
+            </div>
+
+          </div>
+
+          <div
+            id="pump-row"
+            class="pump-row"
+          ></div>
+
+        </div>
+
+
+        <!-- ================= QUEUE ================= -->
+
+        <div class="panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <div class="section-label">
+                Current Queue
+              </div>
+
+            </div>
+
+            <div
+              id="queue-alert-dot"
+              class="queue-alert-dot"
+            ></div>
+
+          </div>
+
+
+          <div
+            id="queue-list"
+            class="queue-list"
+          ></div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =================================================
+           SCAN QR
+      ================================================== -->
+
+      <section
+        id="view-scan"
+        class="view"
+      >
+
+        <div class="main-topbar">
+
+          <div>
+
+            <div class="eyebrow">
+              QR VERIFICATION
+            </div>
+
+            <h1>
+              Scan Customer QR
+            </h1>
+
+            <p class="body-text">
+              Scan the customer's booking QR code.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="scan-wrap">
+
+
+          <!-- CAMERA -->
+
+          <div class="camera-box">
+
+            <div
+              id="camera-placeholder"
+              class="camera-placeholder"
+            >
+              Camera is off
+            </div>
+
+            <video
+              id="scan-video"
+              playsinline
+              muted
+            ></video>
+
+            <canvas
+              id="scan-canvas"
+              style="display:none;"
+            ></canvas>
+
+            <div
+              id="scan-frame"
+              class="scan-frame"
+            ></div>
+
+          </div>
+
+
+          <button
+            id="btn-start-camera"
+            class="primary-btn"
+            type="button"
+          >
+            Turn on Camera
+          </button>
+
+
+          <!-- DIVIDER -->
+
+          <div class="divider-row">
+
+            <span>
+              OR
+            </span>
+
+          </div>
+
+
+          <!-- MANUAL TOKEN -->
+
+          <div class="manual-row">
+
+            <input
+              id="manual-token"
+              type="text"
+              placeholder="Enter token e.g. IOC-123"
+            >
+
+            <button
+              id="btn-manual-lookup"
+              class="ghost-btn"
+              type="button"
+            >
+              Lookup
+            </button>
+
+          </div>
+
+
+          <!-- QUICK BOOKINGS -->
+
+          <div class="quick-list">
+
+            <div class="section-label">
+              Recent Bookings
+            </div>
+
+            <div
+              id="quick-list"
+              class="quick-list-items"
+            ></div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =================================================
+           VERIFY BOOKING
+      ================================================== -->
+
+      <section
+        id="view-verify"
+        class="view"
+      >
+
+        <div class="main-topbar">
+
+          <div>
+
+            <div class="eyebrow">
+              BOOKING CHECK
+            </div>
+
+            <h1>
+              Verify Booking
+            </h1>
+
+          </div>
+
+        </div>
+
+
+        <div class="verify-wrap">
+
+
+          <!-- VERIFY STATUS -->
+
+          <div
+            id="verify-status"
+            class="verify-status invalid"
+          >
+
+            <div
+              id="verify-icon"
+              class="vs-icon"
+            >
+              !
+            </div>
+
+            <div>
+
+              <div
+                id="verify-title"
+                class="vs-title"
+              >
+                Cannot proceed
+              </div>
+
+              <div
+                id="verify-sub"
+                class="body-text"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <!-- BOOKING DETAILS -->
+
+          <div
+            id="verify-details"
+            class="detail-panel"
+          >
+
+          </div>
+
+
+          <!-- CHECK LIST -->
+
+          <div
+            id="check-list"
+            class="check-list"
+          ></div>
+
+
+          <!-- ACTIONS -->
+
+          <div class="action-row">
+
+            <button
+              id="btn-verify-cancel"
+              class="ghost-btn"
+              type="button"
+            >
+              Cancel
+            </button>
+
+            <button
+              id="btn-assign-pump"
+              class="primary-btn"
+              type="button"
+            >
+              Assign Pump
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =================================================
+           FUELING
+      ================================================== -->
+
+      <section
+        id="view-fueling"
+        class="view"
+      >
+
+        <div class="main-topbar">
+
+          <div>
+
+            <div class="eyebrow">
+              FUELING
+            </div>
+
+            <h1>
+              Complete Fueling
+            </h1>
+
+          </div>
+
+        </div>
+
+
+        <div class="fueling-wrap">
+
+
+          <!-- PUMP HERO -->
+
+          <div class="pump-hero">
+
+            <div>
+
+              <div class="eyebrow">
+                ASSIGNED PUMP
+              </div>
+
+              <div
+                id="fuel-pump-num"
+                class="pump-num"
+              >
+                —
+              </div>
+
+            </div>
+
+            <div>
+
+              <div class="section-label">
+                Booking
+              </div>
+
+              <div
+                id="fuel-token-line"
+              >
+                —
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- FUEL DETAILS -->
+
+          <div class="panel">
+
+            <div class="panel-head">
+
+              <div class="section-label">
+                Fueling Details
+              </div>
+
+            </div>
+
+
+            <div class="form-field">
+
+              <label for="fuel-litres">
+                Litres
+              </label>
+
+              <input
+                id="fuel-litres"
+                type="number"
+                step="0.1"
+                min="0"
+                placeholder="Enter litres"
+              >
+
+            </div>
+
+
+            <div class="inline-two">
+
+              <div class="form-field">
+
+                <label for="fuel-rate">
+                  Rate
+                </label>
+
+                <input
+                  id="fuel-rate"
+                  type="text"
+                  readonly
+                >
+
+              </div>
+
+
+              <div class="form-field">
+
+                <label for="fuel-amount">
+                  Amount
+                </label>
+
+                <input
+                  id="fuel-amount"
+                  type="text"
+                  readonly
+                >
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- PAYMENT -->
+
+          <div class="panel">
+
+            <div class="panel-head">
+
+              <div class="section-label">
+                Payment
+              </div>
+
+            </div>
+
+
+            <div class="form-field">
+
+              <label for="fuel-pay-mode">
+                Payment Method
+              </label>
+
+              <select id="fuel-pay-mode">
+
+                <option value="cash">
+                  Cash
+                </option>
+
+                <option value="upi">
+                  UPI
+                </option>
+
+                <option value="card">
+                  Card
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+
+          <!-- COMPLETE -->
+
+          <button
+            id="btn-complete-fueling"
+            class="primary-btn"
+            type="button"
+          >
+            Complete Fueling
+          </button>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =================================================
+           HISTORY
+      ================================================== -->
+
+      <section
+        id="view-history"
+        class="view"
+      >
+
+        <div class="main-topbar">
+
+          <div>
+
+            <div class="eyebrow">
+              TRANSACTIONS
+            </div>
+
+            <h1>
+              History
+            </h1>
+
+            <p class="body-text">
+              Completed fueling transactions.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="history-table">
+
+          <div
+            id="staff-history-list"
+            class="queue-list"
+          ></div>
+
+        </div>
+
+      </section>
+
+
+    </main>
+
+  </div>
+
+
+  <!-- =====================================================
+       TOAST
+  ====================================================== -->
+
+  <div
+    id="staff-toast"
+    class="toast"
+  >
+
+    <span
+      id="staff-toast-msg"
+      class="msg"
+    ></span>
+
+  </div>
+
+
+</div>
+
+
+<!-- =======================================================
+     FIREBASE
+======================================================== -->
+
+<script
+  type="module"
+  src="js/firebase-config.js"
+></script>
+
+
+<!-- =======================================================
+     STAFF JAVASCRIPT
+======================================================== -->
+
+<script
+  type="module"
+  src="js/app.js"
+></script>
+
+</body>
+</html>

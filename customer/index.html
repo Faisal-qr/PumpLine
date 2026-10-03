@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PumpLine — Customer App</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
+  
+
+    <link rel="icon" href="data:,">
+
+</head>
+<body>
+  <div id="customer-app" class="pane active">
+  <!-- Firebase Login Screen -->
+<section class="screen active" id="screen-auth">
+
+  <div class="auth-container">
+
+    <div class="brand-mark">
+      <div class="nozzle">⛽</div>
+      <span>PumpLine</span>
+    </div>
+
+    <h1 id="auth-title">Welcome to PumpLine</h1>
+
+    <p class="body-text" id="auth-subtitle">
+      Login to book your fuel slot.
+    </p>
+
+    <div class="section-block">
+      <div class="section-label">Email</div>
+      <input
+        type="email"
+        id="auth-email"
+        placeholder="Enter your email"
+      >
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Password</div>
+      <input
+        type="password"
+        id="auth-password"
+        placeholder="Enter your password"
+      >
+    </div>
+
+    <div id="auth-error" class="auth-error"></div>
+
+    <button class="primary-btn" id="btn-auth">
+      Login
+    </button>
+
+    <button class="secondary-btn" id="btn-toggle-auth">
+      Create new account
+    </button>
+
+  </div>
+
+</section>
+    <!-- --------------------login page Ending--------------------  -->
+
+
+
+<div class="device">
+  <div class="app" id="app">
+
+    <!-- ============ SCREEN 1: LOCATION / SPLASH ============ -->
+    <section class="screen" id="screen-location">
+      <div>
+        <div class="brand-mark">
+          <div class="nozzle">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 3v18M6 3h9a3 3 0 013 3v3a2 2 0 002 2M6 10h7M6 15h5" stroke="#1A1300" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <span>PumpLine</span>
+        </div>
+
+        <div class="splash-hero">
+          <div class="display-xl">Skip the line<br/>at the pump.</div>
+          <div class="body-text">Find fuel stations near you, check the live queue, and book your slot before you even leave home.</div>
+        </div>
+
+        <div class="gauge-row">
+          <div class="gauge-chip">
+            <div class="num">4,200+</div>
+            <div class="lbl">Stations tracked</div>
+          </div>
+          <div class="gauge-chip">
+            <div class="num">6 min</div>
+            <div class="lbl">Avg. wait saved</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button class="locate-btn" id="btn-locate">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 5 5.2 5 9.4c0 5.6 7 12.6 7 12.6s7-7 7-12.6C19 5.2 16 2 12 2z" stroke="#1A1300" stroke-width="2"/><circle cx="12" cy="9.4" r="2.4" fill="#1A1300"/></svg>
+          Find fuel stations near me
+        </button>
+        <div class="locating-state" id="locating-state">
+          <div class="spinner"></div>
+          <span class="small">Locating you…</span>
+        </div>
+        <div class="locate-fineprint small">We only use this to find nearby stations. Nothing is shared.</div>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 2: HOME ============ -->
+    <section class="screen" id="screen-home">
+      <div class="topbar">
+        <div class="location-pin">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 5 5.2 5 9.4c0 5.6 7 12.6 7 12.6s7-7 7-12.6C19 5.2 16 2 12 2z" stroke="#FFB020" stroke-width="2"/><circle cx="12" cy="9.4" r="2.2" fill="#FFB020"/></svg>
+          <div>
+            <div class="addr" id="home-addr">Bandra West, Mumbai</div>
+            <div class="chg" id="btn-change-loc">Change location</div>
+          </div>
+        </div>
+        <button class="icon-btn" id="btn-go-profile">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="#F3F5F8" stroke-width="1.8"/><path d="M4.5 20c1.6-3.6 4.8-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="#F3F5F8" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="search-wrap">
+        <div class="search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#8891A3" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="#8891A3" stroke-width="2" stroke-linecap="round"/></svg>
+          <input type="text" id="search-input" placeholder="Search stations or areas" />
+        </div>
+      </div>
+
+      <div class="filter-row" id="filter-row">
+        <button class="chip is-active" data-fuel="All">All fuels</button>
+        <button class="chip" data-fuel="Petrol">Petrol</button>
+        <button class="chip" data-fuel="Diesel">Diesel</button>
+        <button class="chip" data-fuel="CNG">CNG</button>
+        <button class="chip" data-fuel="EV">EV charge</button>
+      </div>
+
+      <div class="view-toggle-row">
+        <div class="segmented" id="view-segmented">
+          <button class="is-active" data-view="list">List</button>
+          <button data-view="map">Map</button>
+        </div>
+        <div class="sort-note" id="sort-note">Sorted by distance</div>
+      </div>
+
+      <div class="scroll">
+        <div class="map-wrap" id="map-wrap" style="display:none;">
+          <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="260" fill="#171D28"/>
+            <line x1="0" y1="60" x2="400" y2="60" stroke="#2C3648" stroke-width="10"/>
+            <line x1="0" y1="60" x2="400" y2="60" stroke="#5B6478" stroke-width="1.5" stroke-dasharray="8 8"/>
+            <line x1="0" y1="180" x2="400" y2="150" stroke="#2C3648" stroke-width="10"/>
+            <line x1="0" y1="180" x2="400" y2="150" stroke="#5B6478" stroke-width="1.5" stroke-dasharray="8 8"/>
+            <line x1="90" y1="0" x2="130" y2="260" stroke="#2C3648" stroke-width="10"/>
+            <line x1="90" y1="0" x2="130" y2="260" stroke="#5B6478" stroke-width="1.5" stroke-dasharray="8 8"/>
+            <line x1="300" y1="0" x2="270" y2="260" stroke="#2C3648" stroke-width="10"/>
+            <line x1="300" y1="0" x2="270" y2="260" stroke="#5B6478" stroke-width="1.5" stroke-dasharray="8 8"/>
+          </svg>
+          <div class="map-pin is-you" style="left:50%; top:52%;">
+            <div class="dot"><span>•</span></div>
+          </div>
+          <div id="map-pins"></div>
+        </div>
+
+        <div class="station-list" id="station-list"></div>
+      </div>
+
+      <nav class="bottom-nav">
+        <button class="nav-item is-active" data-tab="home">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1v-9z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <span class="nav-lbl">Home</span>
+        </button>
+        <button class="nav-item" data-tab="history">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 7v5l3.5 2M21 12a9 9 0 11-3-6.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span class="nav-lbl">Bookings</span>
+        </button>
+        <button class="nav-item" data-tab="profile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.6-3.6 4.8-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span class="nav-lbl">Profile</span>
+        </button>
+      </nav>
+    </section>
+
+    <!-- ============ SCREEN 3: STATION DETAIL ============ -->
+    <section class="screen" id="screen-detail">
+      <div class="back-row">
+        <button class="icon-btn" id="btn-back-detail">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#F3F5F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="scroll">
+        <div class="detail-hero">
+          <div class="detail-top-row">
+            <span class="small" id="d-brand">Indian Oil</span>
+          </div>
+          <div class="detail-badge" id="d-badge">
+            <span class="pulse-dot"></span>
+            <span id="d-badge-text">Live · 8 in queue</span>
+          </div>
+          <div class="detail-name" id="d-name">Indian Oil — Linking Road</div>
+          <div class="detail-addr" id="d-addr">Linking Road, Bandra West · 0.6 km away</div>
+        </div>
+
+        <div class="queue-panel">
+          <div class="queue-big" id="d-queue-num">8</div>
+          <div class="queue-panel-info">
+            <div class="title">Currently in queue</div>
+            <div class="small" id="d-wait-text">~4 min per vehicle · est. 32 min wait</div>
+            <div class="pump-strip" id="d-pump-strip"></div>
+          </div>
+        </div>
+
+        <div class="detail-section-title">Fuel prices & stock</div>
+        <div class="fuel-table" id="d-fuel-table"></div>
+
+        <div class="detail-section-title">Station details</div>
+        <div class="fuel-table">
+          <div class="fuel-row"><span class="small">Pumps active</span><span class="title" id="d-pumps-active" style="font-size:14px;">3 / 4</span></div>
+          <div class="fuel-row"><span class="small">Operating hours</span><span class="title" style="font-size:14px;">24 hours</span></div>
+          <div class="fuel-row"><span class="small">Payment accepted</span><span class="title" style="font-size:14px;">UPI · Card · Cash</span></div>
+        </div>
+        <div style="height:20px;"></div>
+      </div>
+      <div class="sticky-cta">
+        <button class="primary-btn" id="btn-book-slot">Book a slot</button>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 4: BOOKING ============ -->
+    <section class="screen" id="screen-booking">
+      <div class="back-row" style="justify-content:space-between; align-items:center;">
+        <button class="icon-btn" id="btn-back-booking">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#F3F5F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="title" style="padding-right:16px;">Book your slot</div>
+        <span style="width:36px;"></span>
+      </div>
+
+      <div class="scroll">
+        <div class="section-block">
+          <div class="section-label">Fuel type</div>
+          <div class="fuel-pick-row" id="booking-fuel-row"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-label">How much</div>
+          <div class="mode-row" id="booking-mode-row">
+            <button class="mode-pick is-active" data-mode="amount">By amount (₹)</button>
+            <button class="mode-pick" data-mode="litres">By litres</button>
+            <button class="mode-pick" data-mode="full">Full tank</button>
+          </div>
+        </div>
+
+        <div class="section-block" id="qty-block">
+          <div class="qty-control">
+            <button class="qty-step" id="qty-minus">−</button>
+            <div class="qty-value" id="qty-display">₹500<span id="qty-sub">Approx. 4.8 L</span></div>
+            <button class="qty-step" id="qty-plus">+</button>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-label">Arrival time</div>
+          <div class="mode-row" id="slot-mode-row">
+            <button class="mode-pick is-active" data-slot-type="quick">⚡ Quick</button>
+            <button class="mode-pick" data-slot-type="scheduled">🕐 Choose time</button>
+          </div>
+
+          <div id="quick-slot-panel" style="margin-top:12px;">
+            <div class="summary-panel" style="padding:14px;">
+              <div class="title" style="font-size:14px;">Earliest available</div>
+              <div class="small" style="margin-top:4px;">We'll use the earliest practical arrival time based on the current queue.</div>
+              <div id="quick-slot-time" style="font-size:22px;font-weight:700;margin-top:10px;">—</div>
+            </div>
+          </div>
+
+          <div id="scheduled-slot-panel" style="display:none;margin-top:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span class="small">Drag to choose a time</span>
+              <span id="slot-time-display" class="title" style="font-size:16px;">10:00 AM</span>
+            </div>
+            <input id="slot-time-range" type="range" min="0" max="72" step="1" value="0" style="width:100%;accent-color:var(--green);cursor:pointer;">
+            <div style="display:flex;justify-content:space-between;margin-top:7px;">
+              <span class="small">10:00 AM</span>
+              <span class="small">10:00 PM</span>
+            </div>
+            <div class="small" style="margin-top:8px;">Time changes in 10-minute intervals.</div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-label">Payment</div>
+          <div class="pay-row" id="pay-row">
+            <button class="pay-pick is-active" data-pay="prepay">
+              <div class="pp-title">Pay now</div>
+              <div class="pp-sub">UPI / Card — reserve your slot</div>
+            </button>
+            <button class="pay-pick" data-pay="atpump">
+              <div class="pp-title">Pay at pump</div>
+              <div class="pp-sub">Settle after fueling</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-label">Summary</div>
+          <div class="summary-panel">
+            <div class="summary-line"><span class="l">Station</span><span id="sum-station">—</span></div>
+            <div class="summary-line"><span class="l">Fuel</span><span id="sum-fuel">—</span></div>
+            <div class="summary-line"><span class="l">Your position if booked now</span><span id="sum-position">—</span></div>
+            <div class="summary-line"><span class="l">Estimated wait</span><span id="sum-wait">—</span></div>
+            <div class="summary-line"><span class="l">Arrival time</span><span id="sum-slot-time">—</span></div>
+            <div class="summary-line total"><span class="l">Amount</span><span id="sum-amount">—</span></div>
+          </div>
+        </div>
+        <div style="height:20px;"></div>
+      </div>
+
+      <div class="sticky-cta">
+        <button class="primary-btn" id="btn-confirm-booking">Confirm booking</button>
+      </div>
+    </section>
+       
+       <!-- ============ SCREEN: UPI PAYMENT ============ -->
+<section class="screen" id="screen-upi-payment">
+
+  <div class="back-row">
+    <button class="icon-btn" id="btn-back-upi">
+      ←
+    </button>
+
+    <div class="title">UPI Payment</div>
+  </div>
+
+  <div class="scroll">
+
+    <!-- PAYMENT SUMMARY -->
+    <div class="section-block">
+
+      <div class="section-label">Pay to Pump</div>
+
+      <div class="summary-panel">
+
+        <div class="summary-line">
+          <span class="l">Pump</span>
+          <span id="upi-pump-name">Linking Road</span>
+        </div>
+
+        <div class="summary-line">
+          <span class="l">Amount</span>
+          <span id="upi-amount">₹500</span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- UPI APP PAYMENT -->
+    <div class="section-block">
+
+      <div class="section-label">
+        Pay using UPI App
+      </div>
+
+      <div
+        style="
+          display:grid;
+          grid-template-columns:repeat(3,1fr);
+          gap:10px;
+          margin-top:12px;
+        "
+      >
+
+        <!-- GOOGLE PAY -->
+        <button
+          type="button"
+          class="upi-app-btn"
+          id="btn-gpay"
+          style="
+            padding:14px 8px;
+            border:1px solid #303746;
+            border-radius:14px;
+            background:#191F2B;
+            color:#F3F5F8;
+            cursor:pointer;
+          "
+        >
+          <div style="font-size:25px;">🟢</div>
+          <div style="margin-top:7px;font-size:13px;">
+            Google Pay
+          </div>
+        </button>
+
+
+        <!-- PHONEPE -->
+        <button
+          type="button"
+          class="upi-app-btn"
+          id="btn-phonepe"
+          style="
+            padding:14px 8px;
+            border:1px solid #303746;
+            border-radius:14px;
+            background:#191F2B;
+            color:#F3F5F8;
+            cursor:pointer;
+          "
+        >
+          <div style="font-size:25px;">🟣</div>
+          <div style="margin-top:7px;font-size:13px;">
+            PhonePe
+          </div>
+        </button>
+
+
+        <!-- PAYTM -->
+        <button
+          type="button"
+          class="upi-app-btn"
+          id="btn-paytm"
+          style="
+            padding:14px 8px;
+            border:1px solid #303746;
+            border-radius:14px;
+            background:#191F2B;
+            color:#F3F5F8;
+            cursor:pointer;
+          "
+        >
+          <div style="font-size:25px;">🔵</div>
+          <div style="margin-top:7px;font-size:13px;">
+            Paytm
+          </div>
+        </button>
+
+      </div>
+
+
+      <!-- OTHER UPI -->
+      <button
+        type="button"
+        id="btn-other-upi"
+        style="
+          width:100%;
+          margin-top:10px;
+          padding:13px;
+          border:1px solid #303746;
+          border-radius:12px;
+          background:#191F2B;
+          color:#F3F5F8;
+          font-size:14px;
+          cursor:pointer;
+        "
+      >
+        Other UPI Apps
+      </button>
+
+    </div>
+
+
+    <!-- OR -->
+    <div
+      style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+        margin:5px 20px 10px;
+        color:#737C8E;
+        font-size:12px;
+      "
+    >
+
+      <div style="height:1px;background:#303746;flex:1;"></div>
+
+      <span>OR</span>
+
+      <div style="height:1px;background:#303746;flex:1;"></div>
+
+    </div>
+
+
+    <!-- QR PAYMENT -->
+    <div
+      class="section-block"
+      style="text-align:center;"
+    >
+
+      <div class="section-label">
+        Scan & Pay
+      </div>
+
+      <div
+        style="
+          background:#ffffff;
+          padding:16px;
+          border-radius:16px;
+          display:inline-block;
+          margin-top:10px;
+        "
+      >
+
+        <img
+          id="pump-qr"
+          src="image/pump-qr-img.png"
+          alt="Pump UPI QR"
+          style="
+            width:220px;
+            height:220px;
+            object-fit:contain;
+          "
+        >
+
+      </div>
+
+      <div
+        style="
+          margin-top:14px;
+          font-size:14px;
+          color:#8F98AA;
+        "
+      >
+        Scan this QR using any UPI app
+      </div>
+
+      <div
+        id="pump-upi-id"
+        style="
+          margin-top:8px;
+          font-weight:600;
+          color:#F3F5F8;
+        "
+      >
+        UPI ID: pumplinepump@upi
+      </div>
+
+    </div>
+
+
+    <!-- PAYMENT INFO -->
+    <div class="section-block">
+
+      <div
+        style="
+          padding:14px;
+          border-radius:12px;
+          background:#191F2B;
+          font-size:13px;
+          color:#AAB2C3;
+        "
+      >
+        Complete the payment using any UPI option above
+        or scan the QR code.
+
+        <br><br>
+
+        After payment, click
+        <b style="color:#F3F5F8;">
+          I've Completed Payment
+        </b>
+        to confirm your booking.
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- CONFIRM PAYMENT -->
+  <div class="sticky-cta">
+
+    <button
+      class="primary-btn"
+      id="btn-payment-done"
+    >
+      I've Completed Payment
+    </button>
+
+  </div>
+
+</section>
+
+    <!-- ============ SCREEN 5: TOKEN / LIVE TRACKING ============ -->
+    <section class="screen" id="screen-token">
+      <div class="toast" id="toast"><span class="msg" id="toast-msg"></span></div>
+
+      <div class="scroll">
+        <div class="token-hero">
+          <span class="token-badge" id="token-status-badge">Booking confirmed</span>
+          <div class="token-num" id="token-number">#IOC-482</div>
+          <div class="token-station small" id="token-station">Indian Oil — Linking Road</div>
+        </div>
+
+        <div class="timeline" id="timeline">
+          <div class="tl-step done"><div class="tl-dot"></div><div class="tl-label">Booked</div></div>
+          <div class="tl-step"><div class="tl-dot"></div><div class="tl-label">Called</div></div>
+          <div class="tl-step"><div class="tl-dot"></div><div class="tl-label">At pump</div></div>
+          <div class="tl-step"><div class="tl-dot"></div><div class="tl-label">Done</div></div>
+        </div>
+
+        <div class="position-panel">
+          <div class="small">Your position in queue</div>
+          <div class="position-num" id="position-num">6</div>
+          <div class="eta-row">
+            <div class="eta-item"><div class="val" id="eta-min">18 min</div><div class="lbl">Est. wait</div></div>
+            <div class="eta-item"><div class="val" id="eta-pump">Pump 2</div><div class="lbl">Likely pump</div></div>
+          </div>
+        </div>
+
+        <div class="arrival-panel" id="arrival-panel">
+          <div class="title">It's nearly your turn</div>
+          <div class="body-text">Head to the station now and show your QR code to the staff at the pump counter.</div>
+        </div>
+
+        <div class="qr-wrap">
+          <div class="qr-card" id="qr-code"></div>
+        </div>
+
+        <div class="section-block" id="staff-action-block">
+          <div class="summary-panel" style="text-align:center;">
+            <div class="small" id="staff-action-text">This screen updates automatically once the station staff scans your QR.</div>
+          </div>
+        </div>
+
+        <div class="demo-note">This queue updates live as your position changes.</div>
+        <div style="height:20px;"></div>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 6: RECEIPT ============ -->
+    <section class="screen" id="screen-receipt">
+      <div class="scroll">
+        <div class="receipt-check">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#35D07F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="text-align:center; margin-top:16px;">
+          <div class="display-lg">Fueling complete</div>
+          <div class="body-text" id="receipt-station">Indian Oil — Linking Road</div>
+        </div>
+
+        <div class="receipt-panel">
+          <div class="receipt-row"><span class="l">Token</span><span id="r-token">#IOC-482</span></div>
+          <div class="receipt-row"><span class="l">Fuel type</span><span id="r-fuel">Petrol</span></div>
+          <div class="receipt-row"><span class="l">Litres dispensed</span><span id="r-litres">4.7 L</span></div>
+          <div class="receipt-row"><span class="l">Rate</span><span id="r-rate">₹104.50 / L</span></div>
+          <div class="receipt-row"><span class="l">Payment mode</span><span id="r-mode">UPI</span></div>
+          <div class="receipt-row total"><span class="l">Total paid</span><span id="r-total">₹491.15</span></div>
+        </div>
+
+        <div style="text-align:center; margin-top:22px;">
+          <div class="small">Rate your experience</div>
+          <div class="star-row" id="star-row">
+            <span class="star" data-star="1">★</span>
+            <span class="star" data-star="2">★</span>
+            <span class="star" data-star="3">★</span>
+            <span class="star" data-star="4">★</span>
+            <span class="star" data-star="5">★</span>
+          </div>
+        </div>
+        <div style="height:20px;"></div>
+      </div>
+      <div class="sticky-cta">
+        <button class="primary-btn" id="btn-receipt-done">Done</button>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 7: HISTORY ============ -->
+    <section class="screen" id="screen-history">
+      <div class="topbar">
+        <div class="title">Your bookings</div>
+        <span style="width:36px;"></span>
+      </div>
+      <div class="scroll" style="padding-top:14px;">
+        <div id="history-list"></div>
+      </div>
+      <nav class="bottom-nav">
+        <button class="nav-item" data-tab="home">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1v-9z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <span class="nav-lbl">Home</span>
+        </button>
+        <button class="nav-item is-active" data-tab="history">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 7v5l3.5 2M21 12a9 9 0 11-3-6.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span class="nav-lbl">Bookings</span>
+        </button>
+        <button class="nav-item" data-tab="profile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.6-3.6 4.8-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span class="nav-lbl">Profile</span>
+        </button>
+      </nav>
+    </section>
+
+    <!-- ============ SCREEN 8: PROFILE ============ -->
+    <section class="screen" id="screen-profile">
+      <div class="topbar">
+        <div class="title">Profile</div>
+        <span style="width:36px;"></span>
+      </div>
+      <div class="scroll">
+        <div class="profile-hero">
+          <div class="avatar">FQ</div>
+          <div>
+            <div class="title" style="font-size:16px;">Faisal Q.</div>
+            <div class="small">+91 98XXX XXX12</div>
+          </div>
+        </div>
+        <div class="profile-row">
+          <div><div class="pr-label">Vehicle</div><div class="pr-sub">MH 02 AB 1234 · Sedan · Petrol</div></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#5B6478" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="profile-row">
+          <div><div class="pr-label">Saved stations</div><div class="pr-sub">2 stations pinned</div></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#5B6478" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="profile-row">
+          <div><div class="pr-label">Payment methods</div><div class="pr-sub">UPI, 1 card saved</div></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#5B6478" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="profile-row">
+          <div><div class="pr-label">Notifications</div><div class="pr-sub">Queue alerts on</div></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#5B6478" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="profile-row" id="btn-logout">
+          <div><div class="pr-label" style="color:#FF5C5C;">Log out</div></div>
+        </div>
+      </div>
+      <nav class="bottom-nav">
+        <button class="nav-item" data-tab="home">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1v-9z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <span class="nav-lbl">Home</span>
+        </button>
+        <button class="nav-item" data-tab="history">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 7v5l3.5 2M21 12a9 9 0 11-3-6.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span class="nav-lbl">Bookings</span>
+        </button>
+        <button class="nav-item is-active" data-tab="profile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.6-3.6 4.8-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span class="nav-lbl">Profile</span>
+        </button>
+      </nav>
+    </section>
+
+  </div>
+</div>
+
+
+
+</div>
+  <script type="module" src="js/firebase-config.js"></script>
+  <script  type="module" src="js/app.js"></script>
+</body>
+</html>
