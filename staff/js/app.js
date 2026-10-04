@@ -681,31 +681,1071 @@ if(paymentBlock){
   });
 
   /* ---------------- History ---------------- */
-  async function renderHistory(){
-    if(!state.station) return;
-    var tokens = await listStationTokens(state.station.id);
-    var done = tokens.filter(function(t){ return t.status==='completed'; })
-      .sort(function(a,b){ return new Date(b.completedAt) - new Date(a.completedAt); });
+/* ---------------- Booking History + Reports ---------------- */
 
-    var list = el('staff-history-list');
-    list.innerHTML = '';
-    if(done.length === 0){
-      list.innerHTML = '<div class="empty-note"><div class="title" style="font-size:14px;">No completed transactions yet</div><div class="small" style="margin-top:4px;">Finished fuelings will show up here.</div></div>';
-      return;
+var reportState = {
+  all: [],
+  filtered: [],
+  period: '7days',
+  status: 'all',
+  fuel: 'all',
+  payment: 'all',
+  search: '',
+  from: '',
+  to: ''
+};
+
+function escapeHtml(value){
+  return String(value == null ? '' : value)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
+function reportDate(value){
+  if(!value) return null;
+
+  if(value.toDate){
+    return value.toDate();
+  }
+
+  var d = new Date(value);
+
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function startOfDay(d){
+  var x = new Date(d);
+  x.setHours(0,0,0,0);
+  return x;
+}
+
+function endOfDay(d){
+  var x = new Date(d);
+  x.setHours(23,59,59,999);
+  return x;
+}
+
+function getReportRange(){
+
+  var now = new Date();
+  var period = reportState.period;
+
+  var from;
+  var to;
+
+  if(period === 'today'){
+
+    from = startOfDay(now);
+    to = endOfDay(now);
+
+  }else if(period === 'yesterday'){
+
+    var y = new Date(now);
+
+    y.setDate(y.getDate() - 1);
+
+    from = startOfDay(y);
+    to = endOfDay(y);
+
+  }else if(period === '7days'){
+
+    from = startOfDay(now);
+
+    from.setDate(from.getDate() - 6);
+
+    to = endOfDay(now);
+
+  }else if(period === 'month'){
+
+    from = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      1
+    );
+
+    to = endOfDay(now);
+
+  }else if(period === 'custom'){
+
+    from = reportState.from
+      ? startOfDay(
+          new Date(reportState.from + 'T00:00:00')
+        )
+      : null;
+
+    to = reportState.to
+      ? endOfDay(
+          new Date(reportState.to + 'T00:00:00')
+        )
+      : null;
+  }
+
+  return {
+    from: from,
+    to: to
+  };
+}
+
+function isInReportRange(t){
+
+  if(reportState.period === 'all'){
+    return true;
+  }
+
+  var d = reportDate(
+    t.completedAt || t.createdAt
+  );
+
+  if(!d){
+    return false;
+  }
+
+  var range = getReportRange();
+
+  if(range.from && d < range.from){
+    return false;
+  }
+
+  if(range.to && d > range.to){
+    return false;
+  }
+
+  return true;
+}
+
+function updateReportFuelOptions(tokens){
+
+  var select = el('report-fuel');
+
+  if(!select){
+    return;
+  }
+
+  var current = reportState.fuel;
+
+  var fuels = {};
+
+  tokens.forEach(function(t){
+
+    var fuel =
+      t.fuelType ||
+      t.fuel ||
+      'Petrol';
+
+    fuels[fuel] = true;
+
+  });
+
+  select.innerHTML =
+    '<option value="all">All Fuel Types</option>';
+
+  Object.keys(fuels)
+    .sort()
+    .forEach(function(fuel){
+
+      var opt =
+        document.createElement('option');
+
+      opt.value = fuel;
+      opt.textContent = fuel;
+
+      select.appendChild(opt);
+
+    });
+
+  select.value =
+    fuels[current]
+      ? current
+      : 'all';
+
+  reportState.fuel =
+    select.value;
+}
+
+function applyReportFilters(){
+
+  var search =
+    String(reportState.search || '')
+      .trim()
+      .toLowerCase();
+
+  reportState.filtered =
+    reportState.all.filter(function(t){
+
+      if(!isInReportRange(t)){
+        return false;
+      }
+
+      if(
+        reportState.status !== 'all' &&
+        t.status !== reportState.status
+      ){
+        return false;
+      }
+
+      if(
+        reportState.fuel !== 'all' &&
+        (t.fuelType || t.fuel) !== reportState.fuel
+      ){
+        return false;
+      }
+
+      if(
+        reportState.payment !== 'all' &&
+        (t.paymentStatus || 'pending') !==
+        reportState.payment
+      ){
+        return false;
+      }
+
+      if(search){
+
+        var haystack = [
+
+          t.tokenNumber,
+          t.vehicleNumber,
+          t.userEmail,
+          t.customerEmail,
+          t.fuelType,
+          t.fuel,
+          t.pump
+
+        ].join(' ').toLowerCase();
+
+        if(
+          haystack.indexOf(search) === -1
+        ){
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+  reportState.filtered.sort(function(a,b){
+
+    var da =
+      reportDate(
+        a.completedAt || a.createdAt
+      ) || new Date(0);
+
+    var db =
+      reportDate(
+        b.completedAt || b.createdAt
+      ) || new Date(0);
+
+    return db - da;
+
+  });
+}
+
+function renderReportSummary(){
+
+  var rows =
+    reportState.filtered;
+
+  var completed =
+    rows.filter(function(t){
+      return t.status === 'completed';
+    });
+
+  var cancelled =
+    rows.filter(function(t){
+
+      return (
+        t.status === 'cancelled' ||
+        t.status === 'no-show'
+      );
+
+    });
+
+  var litres =
+    completed.reduce(function(sum,t){
+
+      return sum +
+        Number(t.actualLitres || 0);
+
+    },0);
+
+  var revenue =
+    completed.reduce(function(sum,t){
+
+      return sum +
+        Number(t.actualAmount || 0);
+
+    },0);
+
+  el('report-total-bookings').textContent =
+    rows.length;
+
+  el('report-completed').textContent =
+    completed.length;
+
+  el('report-cancelled').textContent =
+    cancelled.length;
+
+  el('report-litres').textContent =
+    litres
+      .toFixed(1)
+      .replace(/\.0$/,'') +
+    ' L';
+
+  el('report-revenue').textContent =
+    fmtINR(revenue);
+}
+
+function renderReportBreakdowns(){
+
+  var rows =
+    reportState.filtered;
+
+  var completed =
+    rows.filter(function(t){
+      return t.status === 'completed';
+    });
+
+  var fuelBox =
+    el('report-fuel-breakdown');
+
+  var payBox =
+    el('report-payment-breakdown');
+
+  fuelBox.innerHTML = '';
+  payBox.innerHTML = '';
+
+  /* ---------- Fuel Breakdown ---------- */
+
+  var fuels = {};
+
+  completed.forEach(function(t){
+
+    var fuel =
+      t.fuelType ||
+      t.fuel ||
+      'Petrol';
+
+    if(!fuels[fuel]){
+
+      fuels[fuel] = {
+        litres: 0,
+        revenue: 0,
+        count: 0
+      };
+
     }
-    done.forEach(function(t){
-      var row = document.createElement('div');
-      row.className = 'queue-row';
-      row.innerHTML =
-        '<div class="qr-token-badge">'+t.tokenNumber+'</div>' +
-        '<div class="queue-row-info">' +
-          '<div class="qr-fuel">'+t.fuelType+' · '+t.actualLitres+' L · '+t.pump+'</div>' +
-          '<div class="qr-meta">'+t.vehicleNumber+' · '+ (t.completedAt ? new Date(t.completedAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '') +'</div>' +
-        '</div>' +
-        '<span class="pay-badge paid">'+(t.paymentMode||'Paid')+'</span>' +
-        '<div class="qr-token-badge" style="min-width:76px;">'+fmtINR(t.actualAmount)+'</div>';
-      list.appendChild(row);
+
+    fuels[fuel].litres +=
+      Number(t.actualLitres || 0);
+
+    fuels[fuel].revenue +=
+      Number(t.actualAmount || 0);
+
+    fuels[fuel].count++;
+
+  });
+
+  var fuelKeys =
+    Object.keys(fuels).sort();
+
+  if(fuelKeys.length === 0){
+
+    fuelBox.innerHTML =
+      '<div class="breakdown-empty">' +
+      'No completed fueling in this period.' +
+      '</div>';
+
+  }else{
+
+    fuelKeys.forEach(function(fuel){
+
+      var x = fuels[fuel];
+
+      fuelBox.insertAdjacentHTML(
+        'beforeend',
+
+        '<div class="breakdown-row">' +
+
+          '<div>' +
+
+            '<strong>' +
+              escapeHtml(fuel) +
+            '</strong>' +
+
+            '<span>' +
+              x.count +
+              ' transaction' +
+              (x.count === 1 ? '' : 's') +
+            '</span>' +
+
+          '</div>' +
+
+          '<div class="breakdown-value">' +
+
+            '<strong class="text-green">' +
+              x.litres.toFixed(1) +
+              ' L' +
+            '</strong>' +
+
+            '<span>' +
+              fmtINR(x.revenue) +
+            '</span>' +
+
+          '</div>' +
+
+        '</div>'
+      );
+
     });
   }
+
+  /* ---------- Payment Breakdown ---------- */
+
+  var payments = {};
+
+  rows.forEach(function(t){
+
+    var key =
+      t.paymentStatus === 'paid'
+        ? 'Paid'
+        : 'Pending';
+
+    if(!payments[key]){
+
+      payments[key] = {
+        count: 0,
+        amount: 0
+      };
+
+    }
+
+    payments[key].count++;
+
+    if(key === 'Paid'){
+
+      payments[key].amount +=
+        Number(
+          t.actualAmount != null
+            ? t.actualAmount
+            : t.requestedAmount || 0
+        );
+
+    }
+
+  });
+
+  ['Paid','Pending'].forEach(function(key){
+
+    if(!payments[key]){
+
+      payments[key] = {
+        count: 0,
+        amount: 0
+      };
+
+    }
+
+    var x =
+      payments[key];
+
+    var cls =
+      key === 'Paid'
+        ? 'text-green'
+        : 'text-red';
+
+    payBox.insertAdjacentHTML(
+      'beforeend',
+
+      '<div class="breakdown-row">' +
+
+        '<div>' +
+
+          '<strong>' +
+            key +
+          '</strong>' +
+
+          '<span>' +
+            x.count +
+            ' transaction' +
+            (x.count === 1 ? '' : 's') +
+          '</span>' +
+
+        '</div>' +
+
+        '<div class="breakdown-value">' +
+
+          '<strong class="' +
+            cls +
+          '">' +
+            fmtINR(x.amount) +
+          '</strong>' +
+
+          '<span>' +
+            key.toLowerCase() +
+          '</span>' +
+
+        '</div>' +
+
+      '</div>'
+    );
+
+  });
+}
+
+function renderReportTable(){
+
+  var tbody =
+    el('staff-history-list');
+
+  var empty =
+    el('report-empty');
+
+  var count =
+    el('report-result-count');
+
+  tbody.innerHTML = '';
+
+  count.textContent =
+    reportState.filtered.length +
+    ' transaction' +
+    (
+      reportState.filtered.length === 1
+        ? ''
+        : 's'
+    );
+
+  if(reportState.filtered.length === 0){
+
+    empty.style.display = 'block';
+
+    return;
+  }
+
+  empty.style.display = 'none';
+
+  reportState.filtered.forEach(function(t){
+
+    var d =
+      reportDate(
+        t.completedAt ||
+        t.createdAt
+      );
+
+    var dateText =
+      d
+        ? d.toLocaleDateString(
+            'en-IN',
+            {
+              day:'2-digit',
+              month:'short',
+              year:'numeric'
+            }
+          )
+        : '—';
+
+    var timeText =
+      d
+        ? d.toLocaleTimeString(
+            'en-IN',
+            {
+              hour:'2-digit',
+              minute:'2-digit'
+            }
+          )
+        : '';
+
+    var customer =
+      t.userEmail ||
+      t.customerEmail ||
+      '—';
+
+    var litres =
+      t.status === 'completed'
+        ? Number(t.actualLitres || 0)
+        : Number(t.requestedLitres || 0);
+
+    var amount =
+      t.status === 'completed'
+        ? Number(t.actualAmount || 0)
+        : Number(t.requestedAmount || 0);
+
+    var payment =
+      t.paymentStatus === 'paid'
+        ? 'Paid'
+        : 'Pending';
+
+    var row =
+      document.createElement('tr');
+
+    row.innerHTML =
+
+      '<td>' +
+        '<span class="table-token">' +
+          escapeHtml(
+            t.tokenNumber || '—'
+          ) +
+        '</span>' +
+      '</td>' +
+
+      '<td>' +
+        '<strong class="table-main">' +
+          escapeHtml(customer) +
+        '</strong>' +
+      '</td>' +
+
+      '<td>' +
+        escapeHtml(
+          t.vehicleNumber || '—'
+        ) +
+      '</td>' +
+
+      '<td>' +
+        escapeHtml(
+          t.fuelType ||
+          t.fuel ||
+          'Petrol'
+        ) +
+      '</td>' +
+
+      '<td>' +
+        litres.toFixed(1) +
+        ' L' +
+      '</td>' +
+
+      '<td>' +
+        escapeHtml(
+          t.pump || '—'
+        ) +
+      '</td>' +
+
+      '<td>' +
+
+        '<span class="pay-badge ' +
+          (
+            payment === 'Paid'
+              ? 'paid'
+              : 'pending'
+          ) +
+        '">' +
+
+          payment +
+
+        '</span>' +
+
+      '</td>' +
+
+      '<td>' +
+
+        '<strong class="table-main">' +
+          fmtINR(amount) +
+        '</strong>' +
+
+      '</td>' +
+
+      '<td>' +
+
+        '<span class="status-badge ' +
+          escapeHtml(t.status || '') +
+        '">' +
+
+          escapeHtml(
+            labelForStatus(
+              t.status || ''
+            )
+          ) +
+
+        '</span>' +
+
+      '</td>' +
+
+      '<td>' +
+
+        '<span class="table-date">' +
+          dateText +
+        '</span>' +
+
+        '<span class="table-time">' +
+          timeText +
+        '</span>' +
+
+      '</td>';
+
+    tbody.appendChild(row);
+
+  });
+}
+
+function renderReport(){
+
+  applyReportFilters();
+
+  renderReportSummary();
+
+  renderReportBreakdowns();
+
+  renderReportTable();
+}
+
+async function renderHistory(){
+
+  if(!state.station){
+    return;
+  }
+
+  try{
+
+    var tokens =
+      await listStationTokens(
+        state.station.id
+      );
+
+    reportState.all =
+      tokens;
+
+    updateReportFuelOptions(
+      tokens
+    );
+
+    renderReport();
+
+  }catch(e){
+
+    console.error(
+      'REPORT LOAD ERROR:',
+      e
+    );
+
+    showToast(
+      'Unable to load booking history.'
+    );
+
+  }
+}
+
+function clearReportFilters(){
+
+  reportState.period = '7days';
+  reportState.status = 'all';
+  reportState.fuel = 'all';
+  reportState.payment = 'all';
+  reportState.search = '';
+  reportState.from = '';
+  reportState.to = '';
+
+  el('report-period').value =
+    '7days';
+
+  el('report-status').value =
+    'all';
+
+  el('report-fuel').value =
+    'all';
+
+  el('report-payment').value =
+    'all';
+
+  el('report-search').value =
+    '';
+
+  el('report-from').value =
+    '';
+
+  el('report-to').value =
+    '';
+
+  el('report-custom-dates').style.display =
+    'none';
+
+  renderReport();
+}
+
+function csvCell(value){
+
+  return '"' +
+    String(
+      value == null
+        ? ''
+        : value
+    ).replace(/"/g,'""') +
+    '"';
+
+}
+
+function exportReportCsv(){
+
+  if(!reportState.filtered.length){
+
+    showToast(
+      'No transactions to export.'
+    );
+
+    return;
+  }
+
+  var headers = [
+    'Token',
+    'Customer Email',
+    'Vehicle',
+    'Fuel',
+    'Litres',
+    'Pump',
+    'Payment',
+    'Amount',
+    'Status',
+    'Date',
+    'Time'
+  ];
+
+  var lines = [
+    headers.map(csvCell).join(',')
+  ];
+
+  reportState.filtered.forEach(
+    function(t){
+
+      var d =
+        reportDate(
+          t.completedAt ||
+          t.createdAt
+        );
+
+      lines.push([
+
+        t.tokenNumber || '',
+
+        t.userEmail ||
+        t.customerEmail ||
+        '',
+
+        t.vehicleNumber || '',
+
+        t.fuelType ||
+        t.fuel ||
+        '',
+
+        t.status === 'completed'
+          ? Number(
+              t.actualLitres || 0
+            ).toFixed(1)
+          : Number(
+              t.requestedLitres || 0
+            ).toFixed(1),
+
+        t.pump || '',
+
+        t.paymentStatus === 'paid'
+          ? 'Paid'
+          : 'Pending',
+
+        t.status === 'completed'
+          ? Number(
+              t.actualAmount || 0
+            ).toFixed(2)
+          : Number(
+              t.requestedAmount || 0
+            ).toFixed(2),
+
+        labelForStatus(
+          t.status || ''
+        ),
+
+        d
+          ? d.toLocaleDateString('en-IN')
+          : '',
+
+        d
+          ? d.toLocaleTimeString(
+              'en-IN',
+              {
+                hour:'2-digit',
+                minute:'2-digit'
+              }
+            )
+          : ''
+
+      ].map(csvCell).join(','));
+
+    }
+  );
+
+  var blob =
+    new Blob(
+      [lines.join('\n')],
+      {
+        type:
+          'text/csv;charset=utf-8;'
+      }
+    );
+
+  var url =
+    URL.createObjectURL(blob);
+
+  var a =
+    document.createElement('a');
+
+  a.href = url;
+
+  a.download =
+    'pumpline-booking-report-' +
+    new Date()
+      .toISOString()
+      .slice(0,10) +
+    '.csv';
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  a.remove();
+
+  URL.revokeObjectURL(url);
+
+  showToast(
+    'Booking report exported successfully.'
+  );
+}
+
+
+/* ---------- Report Filters ---------- */
+
+el('report-period')
+  .addEventListener(
+    'change',
+    function(){
+
+      reportState.period =
+        this.value;
+
+      el(
+        'report-custom-dates'
+      ).style.display =
+        this.value === 'custom'
+          ? 'flex'
+          : 'none';
+
+      renderReport();
+
+    }
+  );
+
+el('report-status')
+  .addEventListener(
+    'change',
+    function(){
+
+      reportState.status =
+        this.value;
+
+      renderReport();
+
+    }
+  );
+
+el('report-fuel')
+  .addEventListener(
+    'change',
+    function(){
+
+      reportState.fuel =
+        this.value;
+
+      renderReport();
+
+    }
+  );
+
+el('report-payment')
+  .addEventListener(
+    'change',
+    function(){
+
+      reportState.payment =
+        this.value;
+
+      renderReport();
+
+    }
+  );
+
+el('report-search')
+  .addEventListener(
+    'input',
+    function(){
+
+      reportState.search =
+        this.value;
+
+      renderReport();
+
+    }
+  );
+
+el('report-from')
+  .addEventListener(
+    'change',
+    function(){
+
+      reportState.from =
+        this.value;
+
+      renderReport();
+
+    }
+  );
+
+el('report-to')
+  .addEventListener(
+    'change',
+    function(){
+
+      reportState.to =
+        this.value;
+
+      renderReport();
+
+    }
+  );
+
+el('btn-clear-report-filters')
+  .addEventListener(
+    'click',
+    clearReportFilters
+  );
+
+el('btn-export-report')
+  .addEventListener(
+    'click',
+    exportReportCsv
+  );
+
+
+    // async function renderHistory(){
+    //   if(!state.station) return;
+    //   var tokens = await listStationTokens(state.station.id);
+    //   var done = tokens.filter(function(t){ return t.status==='completed'; })
+    //     .sort(function(a,b){ return new Date(b.completedAt) - new Date(a.completedAt); });
+
+    //   var list = el('staff-history-list');
+    //   list.innerHTML = '';
+    //   if(done.length === 0){
+    //     list.innerHTML = '<div class="empty-note"><div class="title" style="font-size:14px;">No completed transactions yet</div><div class="small" style="margin-top:4px;">Finished fuelings will show up here.</div></div>';
+    //     return;
+    //   }
+    //   done.forEach(function(t){
+    //     var row = document.createElement('div');
+    //     row.className = 'queue-row';
+    //     row.innerHTML =
+    //       '<div class="qr-token-badge">'+t.tokenNumber+'</div>' +
+    //       '<div class="queue-row-info">' +
+    //         '<div class="qr-fuel">'+t.fuelType+' · '+t.actualLitres+' L · '+t.pump+'</div>' +
+    //         '<div class="qr-meta">'+t.vehicleNumber+' · '+ (t.completedAt ? new Date(t.completedAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '') +'</div>' +
+    //       '</div>' +
+    //       '<span class="pay-badge paid">'+(t.paymentMode||'Paid')+'</span>' +
+    //       '<div class="qr-token-badge" style="min-width:76px;">'+fmtINR(t.actualAmount)+'</div>';
+    //     list.appendChild(row);
+    //   });
+    // }
 
  })();

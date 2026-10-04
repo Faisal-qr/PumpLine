@@ -292,7 +292,7 @@
           type="button"
         >
           <span>🧾</span>
-          <span>History</span>
+          <span>History & Reports</span>
         </button>
 
       </nav>
@@ -906,7 +906,7 @@
 
 
       <!-- =================================================
-           HISTORY
+           HISTORY + REPORTS
       ================================================== -->
 
       <section
@@ -919,33 +919,198 @@
           <div>
 
             <div class="eyebrow">
-              TRANSACTIONS
+              TRANSACTIONS & REPORTS
             </div>
 
             <h1>
-              History
+              Booking History & Reports
             </h1>
 
             <p class="body-text">
-              Completed fueling transactions.
+              View bookings, sales, payments and station performance.
             </p>
+
+          </div>
+
+          <button
+            id="btn-export-report"
+            class="primary-btn report-export-btn"
+            type="button"
+          >
+            Export CSV
+          </button>
+
+        </div>
+
+        <!-- REPORT SUMMARY -->
+        <div id="report-summary" class="report-summary">
+
+          <div class="report-stat-card">
+            <div id="report-total-bookings" class="report-stat-num">0</div>
+            <div class="report-stat-label">Total Bookings</div>
+          </div>
+
+          <div class="report-stat-card">
+            <div id="report-completed" class="report-stat-num">0</div>
+            <div class="report-stat-label">Completed</div>
+          </div>
+
+          <div class="report-stat-card">
+            <div id="report-cancelled" class="report-stat-num">0</div>
+            <div class="report-stat-label">Cancelled / No-show</div>
+          </div>
+
+          <div class="report-stat-card">
+            <div id="report-litres" class="report-stat-num">0 L</div>
+            <div class="report-stat-label">Fuel Sold</div>
+          </div>
+
+          <div class="report-stat-card report-stat-revenue">
+            <div id="report-revenue" class="report-stat-num">₹0</div>
+            <div class="report-stat-label">Total Revenue</div>
+          </div>
+
+        </div>
+
+        <!-- FILTERS -->
+        <div class="panel report-filter-panel">
+
+          <div class="panel-head">
+            <div>
+              <div class="section-label">Report Filters</div>
+              <div class="small">Filter transactions for this station.</div>
+            </div>
+            <button id="btn-clear-report-filters" class="row-action" type="button">
+              Clear
+            </button>
+          </div>
+
+          <div class="report-filters">
+
+            <div class="report-field">
+              <label for="report-period">Period</label>
+              <select id="report-period">
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="7days" selected>Last 7 Days</option>
+                <option value="month">This Month</option>
+                <option value="all">All Time</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+
+            <div id="report-custom-dates" class="report-custom-dates" style="display:none;">
+              <div class="report-field">
+                <label for="report-from">From</label>
+                <input id="report-from" type="date">
+              </div>
+              <div class="report-field">
+                <label for="report-to">To</label>
+                <input id="report-to" type="date">
+              </div>
+            </div>
+
+            <div class="report-field">
+              <label for="report-status">Status</label>
+              <select id="report-status">
+                <option value="all">All Statuses</option>
+                <option value="completed">Completed</option>
+                <option value="booked">Waiting</option>
+                <option value="called">Called</option>
+                <option value="at-pump">At Pump</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="no-show">No-show</option>
+              </select>
+            </div>
+
+            <div class="report-field">
+              <label for="report-fuel">Fuel</label>
+              <select id="report-fuel">
+                <option value="all">All Fuel Types</option>
+              </select>
+            </div>
+
+            <div class="report-field">
+              <label for="report-payment">Payment</label>
+              <select id="report-payment">
+                <option value="all">All Payments</option>
+                <option value="paid">Paid</option>
+                <option value="pending">Pending</option>
+              </select>
+            </div>
+
+            <div class="report-field report-search-field">
+              <label for="report-search">Search</label>
+              <input id="report-search" type="search" placeholder="Token, vehicle or customer email">
+            </div>
 
           </div>
 
         </div>
 
+        <!-- SALES BREAKDOWN -->
+        <div class="report-breakdown-grid">
 
-        <div class="history-table">
+          <div class="panel report-breakdown-panel">
+            <div class="panel-head">
+              <div>
+                <div class="section-label">Fuel Sales</div>
+                <div class="small">Completed fueling by type.</div>
+              </div>
+            </div>
+            <div id="report-fuel-breakdown" class="breakdown-list"></div>
+          </div>
 
-          <div
-            id="staff-history-list"
-            class="queue-list"
-          ></div>
+          <div class="panel report-breakdown-panel">
+            <div class="panel-head">
+              <div>
+                <div class="section-label">Payment Collection</div>
+                <div class="small">Paid vs pending transactions.</div>
+              </div>
+            </div>
+            <div id="report-payment-breakdown" class="breakdown-list"></div>
+          </div>
+
+        </div>
+
+        <!-- TRANSACTION TABLE -->
+        <div class="panel history-table report-table-panel">
+
+          <div class="panel-head">
+            <div>
+              <div class="section-label">Transactions</div>
+              <div id="report-result-count" class="small">0 transactions</div>
+            </div>
+          </div>
+
+          <div class="report-table-wrap">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Token</th>
+                  <th>Customer</th>
+                  <th>Vehicle</th>
+                  <th>Fuel</th>
+                  <th>Litres</th>
+                  <th>Pump</th>
+                  <th>Payment</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Date / Time</th>
+                </tr>
+              </thead>
+              <tbody id="staff-history-list"></tbody>
+            </table>
+          </div>
+
+          <div id="report-empty" class="empty-note" style="display:none;">
+            <div class="title" style="font-size:14px;">No transactions found</div>
+            <div class="small" style="margin-top:4px;">Try changing the report filters.</div>
+          </div>
 
         </div>
 
       </section>
-
 
     </main>
 
