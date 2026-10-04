@@ -1160,3 +1160,343 @@
 #staff-app .sidebar-brand span, #staff-app .staff-chip, #staff-app .nav-btn span:not(.dot-alert), #staff-app .logout-btn span{ display:none; }
 #staff-app .nav-btn, #staff-app .logout-btn{ justify-content:center; }
 #staff-app .main{ padding:20px 16px 50px; }}
+
+
+/* =========================================================
+   PUMPLINE STAFF DASHBOARD — CUSTOMER-MATCHED UI
+   Visual-only improvements: Firebase/JS functionality unchanged.
+   Uses the same colors, spacing, pills and card language as Customer.
+   ========================================================= */
+
+#staff-app #app-shell{
+  background:var(--bg-void);
+}
+
+#staff-app .sidebar{
+  background:var(--bg-void);
+  border-right:1px solid var(--line);
+}
+
+#staff-app .sidebar-brand .nozzle{
+  box-shadow:0 4px 12px rgba(255,176,32,.18);
+}
+
+#staff-app .staff-chip{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius-md);
+  padding:14px;
+}
+
+#staff-app .staff-chip .avatar{
+  background:var(--amber);
+  color:#1A1300;
+  border-radius:10px;
+}
+
+#staff-app .nav-btn{
+  border:1px solid transparent;
+  transition:background .15s ease,border-color .15s ease,transform .15s ease;
+}
+
+#staff-app .nav-btn:hover{
+  background:var(--surface-alt);
+  border-color:var(--line);
+}
+
+#staff-app .nav-btn.is-active{
+  background:var(--amber);
+  color:#1A1300;
+  border-color:var(--amber);
+  font-weight:600;
+}
+
+#staff-app .logout-btn:hover{
+  background:var(--red-dim);
+}
+
+/* Main dashboard */
+#staff-app .main{
+  background:
+    radial-gradient(700px 380px at 85% -10%, rgba(255,176,32,.055), transparent 65%),
+    var(--bg-void);
+}
+
+#staff-app .main-topbar{
+  padding-bottom:4px;
+}
+
+#staff-app .main-topbar .eyebrow{
+  color:var(--amber);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.12em;
+}
+
+#staff-app .main-topbar h1{
+  font-family:var(--font-display);
+  font-size:24px;
+  line-height:1.2;
+  margin-top:5px;
+}
+
+#staff-app .main-topbar .body-text{
+  margin-top:5px;
+}
+
+/* Customer-style stat cards */
+#staff-app .stat-row{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:18px;
+}
+
+#staff-app .stat-card{
+  min-width:0;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius-md);
+  padding:16px;
+  position:relative;
+  overflow:hidden;
+  transition:transform .15s ease,border-color .15s ease;
+}
+
+#staff-app .stat-card:hover{
+  transform:translateY(-2px);
+  border-color:#3A465A;
+}
+
+#staff-app .stat-card::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:4px;
+  background:var(--line);
+}
+
+#staff-app .stat-card:nth-child(1)::before{ background:var(--amber); }
+#staff-app .stat-card:nth-child(2)::before{ background:#F4C95D; }
+#staff-app .stat-card:nth-child(3)::before{ background:var(--blue); }
+#staff-app .stat-card:nth-child(4)::before{ background:var(--green); }
+
+#staff-app .stat-card .num{
+  font-family:var(--font-display);
+  font-size:28px;
+  font-weight:700;
+}
+
+#staff-app .stat-card .lbl{
+  font-size:11.5px;
+  color:var(--ink-faint);
+  margin-top:5px;
+  text-transform:none;
+}
+
+/* Pump status */
+#staff-app .panel{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius-md);
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+}
+
+#staff-app .panel-head{
+  padding:15px 18px;
+}
+
+#staff-app .section-label{
+  font-family:var(--font-display);
+  font-size:14px;
+  font-weight:600;
+}
+
+#staff-app .pump-row{
+  padding:0 18px 17px;
+  margin:0;
+  gap:8px;
+}
+
+#staff-app .pump-chip{
+  background:var(--surface-alt);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:9px 13px;
+  transition:border-color .15s ease,transform .15s ease;
+}
+
+#staff-app .pump-chip:hover{
+  transform:translateY(-1px);
+  border-color:#3A465A;
+}
+
+#staff-app .pump-chip .ps-dot.free{
+  box-shadow:0 0 0 4px rgba(53,208,127,.10);
+}
+
+#staff-app .pump-chip .ps-dot.busy{
+  box-shadow:0 0 0 4px rgba(255,176,32,.10);
+}
+
+/* Queue — same card/pill language as customer */
+#staff-app .queue-row{
+  gap:12px;
+  padding:13px 18px;
+  transition:background .15s ease;
+}
+
+#staff-app .queue-row:hover{
+  background:var(--surface-alt);
+}
+
+#staff-app .qr-token-badge{
+  background:var(--amber-dim);
+  border:1px solid rgba(255,176,32,.25);
+  color:var(--amber);
+  border-radius:var(--radius-sm);
+  min-width:82px;
+}
+
+#staff-app .qr-fuel{
+  font-family:var(--font-display);
+  font-size:13.5px;
+  font-weight:600;
+}
+
+#staff-app .qr-meta{
+  color:var(--ink-faint);
+}
+
+#staff-app .status-badge,
+#staff-app .pay-badge{
+  border-radius:999px;
+}
+
+#staff-app .status-badge.booked{
+  background:var(--surface-alt);
+  color:var(--ink-muted);
+}
+
+#staff-app .status-badge.called{
+  background:var(--amber-dim);
+  color:var(--amber);
+}
+
+#staff-app .status-badge.at-pump{
+  background:var(--blue-dim);
+  color:var(--blue);
+}
+
+#staff-app .status-badge.completed,
+#staff-app .pay-badge.paid{
+  background:var(--green-dim);
+  color:var(--green);
+}
+
+#staff-app .pay-badge.pending{
+  background:var(--red-dim);
+  color:var(--red);
+}
+
+#staff-app .row-action{
+  background:var(--surface-alt);
+  border:1px solid var(--line);
+  border-radius:999px;
+  color:var(--ink);
+  padding:8px 13px;
+  transition:background .15s ease,border-color .15s ease;
+}
+
+#staff-app .row-action:hover{
+  background:var(--amber);
+  border-color:var(--amber);
+  color:#1A1300;
+}
+
+/* Call Next button stays visually identical to Customer CTA */
+#staff-app #btn-call-next{
+  width:auto;
+  min-width:130px;
+  padding:12px 20px;
+}
+
+/* Empty state */
+#staff-app .empty-note{
+  padding:34px 18px;
+}
+
+#staff-app .empty-note .title{
+  font-family:var(--font-display);
+  font-weight:600;
+}
+
+/* Keep other staff screens in the same visual family */
+#staff-app .camera-box,
+#staff-app .quick-item,
+#staff-app .pump-hero,
+#staff-app .manual-row input,
+#staff-app .form-field input,
+#staff-app .form-field select{
+  background:var(--surface);
+  border-color:var(--line);
+  border-radius:var(--radius-md);
+}
+
+#staff-app .quick-item{
+  transition:background .15s ease,border-color .15s ease;
+}
+
+#staff-app .quick-item:hover{
+  background:var(--surface-alt);
+  border-color:#3A465A;
+}
+
+#staff-app .ghost-btn{
+  background:var(--surface);
+  border-color:var(--line);
+}
+
+#staff-app .ghost-btn:hover{
+  background:var(--surface-alt);
+  border-color:var(--amber);
+}
+
+/* Mobile */
+@media (max-width:900px){
+  #staff-app .stat-row{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+@media (max-width:600px){
+  #staff-app .main{
+    padding:20px 14px 50px;
+  }
+
+  #staff-app .main-topbar h1{
+    font-size:21px;
+  }
+
+  #staff-app .stat-row{
+    gap:9px;
+  }
+
+  #staff-app .stat-card{
+    padding:14px;
+  }
+
+  #staff-app .queue-row{
+    flex-wrap:wrap;
+  }
+
+  #staff-app .queue-row-info{
+    min-width:calc(100% - 100px);
+  }
+
+  #staff-app .row-action{
+    margin-left:auto;
+  }
+}
