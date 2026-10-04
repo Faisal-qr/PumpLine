@@ -1161,53 +1161,247 @@
 #staff-app .nav-btn, #staff-app .logout-btn{ justify-content:center; }
 #staff-app .main{ padding:20px 16px 50px; }}
 
+/* =========================
+   FIREBASE AUTH SCREEN
+   ========================= */
+
+.auth-container {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  box-sizing: border-box;
+
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-container .brand-mark {
+  margin-bottom: 25px;
+}
+
+.auth-container h1 {
+  margin-bottom: 8px;
+}
+
+.auth-container .body-text {
+  margin-bottom: 25px;
+}
+
+/* Input Section */
+
+.auth-container .section-block {
+  margin-bottom: 16px;
+}
+
+.auth-container .section-label {
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Email & Password */
+
+.auth-container input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 14px 15px;
+
+  border: 1px solid #394354;
+  border-radius: 10px;
+
+  background: #202735;
+  color: #ffffff;
+
+  font-size: 15px;
+  outline: none;
+}
+
+.auth-container input::placeholder {
+  color: #8993a5;
+}
+
+.auth-container input:focus {
+  border-color: #5aa9ff;
+}
+
+/* Error Message */
+
+.auth-error {
+  display: none;
+
+  margin: 5px 0 12px;
+  padding: 10px 12px;
+
+  border-radius: 8px;
+
+  background: #3b2020;
+  color: #ff7777;
+
+  font-size: 13px;
+}
+
+/* Login / Create Account Button */
+
+#btn-auth {
+  width: 100%;
+  margin-top: 5px;
+}
+
+#btn-auth:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Toggle Button */
+
+#btn-toggle-auth {
+  width: 100%;
+  margin-top: 12px;
+
+  padding: 14px;
+
+  border: 1px solid #394354;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #f3f5f8;
+
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#btn-toggle-auth:hover {
+  background: #202735;
+}
+
+
+/* FIX LOGIN SCREEN OVERLAPPING DEVICE */
+#customer-app > #screen-auth {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  background: #0E1219;
+}
+
+#customer-app > #screen-auth.active {
+  display: flex;
+}
 
 /* =========================================================
-   PUMPLINE STAFF DASHBOARD — CUSTOMER-MATCHED UI
-   Visual-only improvements: Firebase/JS functionality unchanged.
-   Uses the same colors, spacing, pills and card language as Customer.
+   PUMPLINE LIGHT THEME — FINAL OVERRIDES
    ========================================================= */
 
+/* =========================================================
+   PumpLine Staff — LIGHT THEME
+   Add this at the VERY END of css/styles.css
+   No HTML / JS / Firebase changes required.
+   ========================================================= */
+
+#staff-app{
+  --bg-void:#F6F7F9;
+  --surface:#FFFFFF;
+  --surface-alt:#F2F4F7;
+  --surface-raised:#E9EDF2;
+  --line:#DDE2E8;
+  --ink:#17202B;
+  --ink-muted:#667085;
+  --ink-faint:#98A2B3;
+  --amber:#F5A900;
+  --amber-dim:#FFF3D1;
+  --green:#16A765;
+  --green-dim:#E6F7EF;
+  --red:#E5484D;
+  --red-dim:#FDEBEC;
+  --blue:#3B82F6;
+  --blue-dim:#EAF2FF;
+  --backdrop:#F6F7F9;
+}
+
+/* Main page */
 #staff-app #app-shell{
   background:var(--bg-void);
+  color:var(--ink);
 }
 
-#staff-app .sidebar{
-  background:var(--bg-void);
-  border-right:1px solid var(--line);
+#staff-app .main{
+  background:
+    radial-gradient(700px 300px at 80% -80px, rgba(245,169,0,.09), transparent 65%),
+    var(--bg-void);
 }
 
-#staff-app .sidebar-brand .nozzle{
-  box-shadow:0 4px 12px rgba(255,176,32,.18);
+/* Login */
+#staff-app #screen-login{
+  background:
+    radial-gradient(700px 400px at 15% 0%, rgba(245,169,0,.12), transparent 60%),
+    var(--bg-void);
 }
 
-#staff-app .staff-chip{
+#staff-app .login-card{
   background:var(--surface);
   border:1px solid var(--line);
-  border-radius:var(--radius-md);
-  padding:14px;
+  box-shadow:0 18px 50px rgba(16,24,40,.08);
 }
 
-#staff-app .staff-chip .avatar{
-  background:var(--amber);
-  color:#1A1300;
-  border-radius:10px;
+#staff-app .login-brand span,
+#staff-app .sidebar-brand span{
+  color:var(--ink);
 }
 
-#staff-app .nav-btn{
-  border:1px solid transparent;
-  transition:background .15s ease,border-color .15s ease,transform .15s ease;
+#staff-app .field input{
+  background:var(--surface-alt);
+  color:var(--ink);
+  border-color:var(--line);
 }
 
-#staff-app .nav-btn:hover{
+#staff-app .field input:focus{
+  border-color:var(--amber);
+  box-shadow:0 0 0 3px rgba(245,169,0,.14);
+}
+
+#staff-app .login-hint{
   background:var(--surface-alt);
   border-color:var(--line);
 }
 
+/* Sidebar */
+#staff-app .sidebar{
+  background:#FFFFFF;
+  border-right:1px solid var(--line);
+  box-shadow:4px 0 20px rgba(16,24,40,.035);
+}
+
+#staff-app .sidebar-brand .nozzle{
+  box-shadow:0 5px 12px rgba(245,169,0,.22);
+}
+
+#staff-app .staff-chip{
+  background:var(--surface-alt);
+  border-color:var(--line);
+}
+
+#staff-app .staff-chip .sc-name{
+  color:var(--ink);
+}
+
+#staff-app .nav-btn{
+  color:var(--ink-muted);
+}
+
+#staff-app .nav-btn:hover{
+  background:#F7F8FA;
+  color:var(--ink);
+}
+
 #staff-app .nav-btn.is-active{
-  background:var(--amber);
-  color:#1A1300;
-  border-color:var(--amber);
+  background:var(--amber-dim);
+  color:#8A5A00;
   font-weight:600;
 }
 
@@ -1215,166 +1409,119 @@
   background:var(--red-dim);
 }
 
-/* Main dashboard */
-#staff-app .main{
-  background:
-    radial-gradient(700px 380px at 85% -10%, rgba(255,176,32,.055), transparent 65%),
-    var(--bg-void);
+/* Topbar */
+#staff-app .eyebrow{
+  color:#9A6900;
 }
 
-#staff-app .main-topbar{
-  padding-bottom:4px;
+#staff-app .main-topbar h1,
+#staff-app .main-topbar .display-xl{
+  color:var(--ink);
 }
 
-#staff-app .main-topbar .eyebrow{
-  color:var(--amber);
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.12em;
+#staff-app .body-text{
+  color:var(--ink-muted);
 }
 
-#staff-app .main-topbar h1{
-  font-family:var(--font-display);
-  font-size:24px;
-  line-height:1.2;
-  margin-top:5px;
+/* Primary buttons */
+#staff-app .primary-btn{
+  background:var(--amber);
+  color:#201600;
+  box-shadow:0 6px 14px rgba(245,169,0,.16);
 }
 
-#staff-app .main-topbar .body-text{
-  margin-top:5px;
+#staff-app .primary-btn:hover{
+  filter:brightness(.97);
 }
 
-/* Customer-style stat cards */
+#staff-app .primary-btn:disabled{
+  box-shadow:none;
+}
+
+/* Dashboard stat cards */
 #staff-app .stat-row{
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:12px;
-  margin-bottom:18px;
+  gap:14px;
 }
 
 #staff-app .stat-card{
+  position:relative;
   min-width:0;
   background:var(--surface);
   border:1px solid var(--line);
-  border-radius:var(--radius-md);
-  padding:16px;
-  position:relative;
+  box-shadow:0 5px 18px rgba(16,24,40,.045);
   overflow:hidden;
-  transition:transform .15s ease,border-color .15s ease;
-}
-
-#staff-app .stat-card:hover{
-  transform:translateY(-2px);
-  border-color:#3A465A;
 }
 
 #staff-app .stat-card::before{
-  content:'';
+  content:"";
   position:absolute;
   left:0;
   top:0;
   bottom:0;
   width:4px;
-  background:var(--line);
+  background:var(--amber);
 }
 
-#staff-app .stat-card:nth-child(1)::before{ background:var(--amber); }
-#staff-app .stat-card:nth-child(2)::before{ background:#F4C95D; }
-#staff-app .stat-card:nth-child(3)::before{ background:var(--blue); }
-#staff-app .stat-card:nth-child(4)::before{ background:var(--green); }
-
 #staff-app .stat-card .num{
-  font-family:var(--font-display);
-  font-size:28px;
-  font-weight:700;
+  color:var(--ink);
 }
 
 #staff-app .stat-card .lbl{
-  font-size:11.5px;
-  color:var(--ink-faint);
-  margin-top:5px;
-  text-transform:none;
+  color:var(--ink-muted);
 }
 
 /* Pump status */
-#staff-app .panel{
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:var(--radius-md);
-  box-shadow:0 8px 24px rgba(0,0,0,.12);
-}
-
-#staff-app .panel-head{
-  padding:15px 18px;
-}
-
-#staff-app .section-label{
-  font-family:var(--font-display);
-  font-size:14px;
-  font-weight:600;
-}
-
-#staff-app .pump-row{
-  padding:0 18px 17px;
-  margin:0;
-  gap:8px;
-}
-
 #staff-app .pump-chip{
-  background:var(--surface-alt);
-  border:1px solid var(--line);
-  border-radius:999px;
-  padding:9px 13px;
-  transition:border-color .15s ease,transform .15s ease;
-}
-
-#staff-app .pump-chip:hover{
-  transform:translateY(-1px);
-  border-color:#3A465A;
+  background:var(--surface);
+  border-color:var(--line);
+  color:var(--ink);
+  box-shadow:0 3px 10px rgba(16,24,40,.035);
 }
 
 #staff-app .pump-chip .ps-dot.free{
-  box-shadow:0 0 0 4px rgba(53,208,127,.10);
+  box-shadow:0 0 0 4px rgba(22,167,101,.10);
 }
 
 #staff-app .pump-chip .ps-dot.busy{
-  box-shadow:0 0 0 4px rgba(255,176,32,.10);
+  box-shadow:0 0 0 4px rgba(245,169,0,.12);
 }
 
-/* Queue — same card/pill language as customer */
+/* Queue panel */
+#staff-app .panel{
+  background:var(--surface);
+  border-color:var(--line);
+  box-shadow:0 6px 20px rgba(16,24,40,.045);
+}
+
+#staff-app .panel-head{
+  border-bottom-color:var(--line);
+}
+
 #staff-app .queue-row{
-  gap:12px;
-  padding:13px 18px;
-  transition:background .15s ease;
+  border-bottom-color:var(--line);
 }
 
 #staff-app .queue-row:hover{
-  background:var(--surface-alt);
+  background:#FAFBFC;
 }
 
 #staff-app .qr-token-badge{
   background:var(--amber-dim);
-  border:1px solid rgba(255,176,32,.25);
-  color:var(--amber);
-  border-radius:var(--radius-sm);
-  min-width:82px;
+  border-color:#F4D98B;
+  color:#8A5A00;
 }
 
 #staff-app .qr-fuel{
-  font-family:var(--font-display);
-  font-size:13.5px;
-  font-weight:600;
+  color:var(--ink);
 }
 
 #staff-app .qr-meta{
-  color:var(--ink-faint);
+  color:var(--ink-muted);
 }
 
-#staff-app .status-badge,
-#staff-app .pay-badge{
-  border-radius:999px;
-}
-
+/* Status badges */
 #staff-app .status-badge.booked{
   background:var(--surface-alt);
   color:var(--ink-muted);
@@ -1382,86 +1529,109 @@
 
 #staff-app .status-badge.called{
   background:var(--amber-dim);
-  color:var(--amber);
+  color:#8A5A00;
 }
 
 #staff-app .status-badge.at-pump{
   background:var(--blue-dim);
-  color:var(--blue);
+  color:#2563B9;
 }
 
-#staff-app .status-badge.completed,
+#staff-app .status-badge.completed{
+  background:var(--green-dim);
+  color:#087443;
+}
+
+#staff-app .status-badge.cancelled,
+#staff-app .status-badge.no-show{
+  background:var(--red-dim);
+  color:#C53035;
+}
+
 #staff-app .pay-badge.paid{
   background:var(--green-dim);
-  color:var(--green);
+  color:#087443;
 }
 
 #staff-app .pay-badge.pending{
   background:var(--red-dim);
-  color:var(--red);
+  color:#C53035;
 }
 
+/* Queue action buttons */
 #staff-app .row-action{
-  background:var(--surface-alt);
-  border:1px solid var(--line);
-  border-radius:999px;
+  background:var(--surface);
+  border-color:var(--line);
   color:var(--ink);
-  padding:8px 13px;
-  transition:background .15s ease,border-color .15s ease;
 }
 
 #staff-app .row-action:hover{
-  background:var(--amber);
-  border-color:var(--amber);
-  color:#1A1300;
+  background:var(--amber-dim);
+  border-color:#F0C45A;
+  color:#8A5A00;
 }
 
-/* Call Next button stays visually identical to Customer CTA */
-#staff-app #btn-call-next{
-  width:auto;
-  min-width:130px;
-  padding:12px 20px;
-}
-
-/* Empty state */
-#staff-app .empty-note{
-  padding:34px 18px;
-}
-
-#staff-app .empty-note .title{
-  font-family:var(--font-display);
-  font-weight:600;
-}
-
-/* Keep other staff screens in the same visual family */
+/* Scan / camera */
 #staff-app .camera-box,
-#staff-app .quick-item,
-#staff-app .pump-hero,
-#staff-app .manual-row input,
-#staff-app .form-field input,
-#staff-app .form-field select{
+#staff-app .scan-card,
+#staff-app .verify-card,
+#staff-app .fuel-card{
   background:var(--surface);
   border-color:var(--line);
-  border-radius:var(--radius-md);
+  box-shadow:0 6px 20px rgba(16,24,40,.045);
 }
 
-#staff-app .quick-item{
-  transition:background .15s ease,border-color .15s ease;
+#staff-app .camera-box{
+  background:#F2F4F7;
 }
 
-#staff-app .quick-item:hover{
-  background:var(--surface-alt);
-  border-color:#3A465A;
-}
-
-#staff-app .ghost-btn{
-  background:var(--surface);
-  border-color:var(--line);
-}
-
-#staff-app .ghost-btn:hover{
-  background:var(--surface-alt);
+#staff-app .scan-frame{
   border-color:var(--amber);
+}
+
+/* Form fields across staff views */
+#staff-app select,
+#staff-app input,
+#staff-app textarea{
+  background:var(--surface);
+  border-color:var(--line);
+  color:var(--ink);
+}
+
+#staff-app select:focus,
+#staff-app input:focus,
+#staff-app textarea:focus{
+  border-color:var(--amber);
+  box-shadow:0 0 0 3px rgba(245,169,0,.12);
+}
+
+/* Generic secondary / ghost buttons */
+#staff-app .ghost-btn,
+#staff-app .secondary-btn,
+#staff-app .outline-btn{
+  background:var(--surface);
+  border-color:var(--line);
+  color:var(--ink);
+}
+
+#staff-app .ghost-btn:hover,
+#staff-app .secondary-btn:hover,
+#staff-app .outline-btn:hover{
+  background:var(--surface-alt);
+  border-color:#C9D0D9;
+}
+
+/* Empty states */
+#staff-app .empty-note,
+#staff-app .empty-state{
+  color:var(--ink-muted);
+}
+
+/* History */
+#staff-app .history-card{
+  background:var(--surface);
+  border-color:var(--line);
+  box-shadow:0 4px 14px rgba(16,24,40,.04);
 }
 
 /* Mobile */
@@ -1469,34 +1639,55 @@
   #staff-app .stat-row{
     grid-template-columns:repeat(2,minmax(0,1fr));
   }
+
+  #staff-app .sidebar{
+    width:190px;
+  }
+
+  #staff-app .main{
+    padding:22px 20px 50px;
+  }
 }
 
 @media (max-width:600px){
-  #staff-app .main{
-    padding:20px 14px 50px;
-  }
-
-  #staff-app .main-topbar h1{
-    font-size:21px;
-  }
-
   #staff-app .stat-row{
-    gap:9px;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
   }
 
-  #staff-app .stat-card{
-    padding:14px;
+  #staff-app .main{
+    padding:18px 14px 40px;
+  }
+
+  #staff-app .sidebar{
+    width:72px;
+    padding:18px 8px;
+  }
+
+  #staff-app .sidebar-brand span,
+  #staff-app .staff-chip .sc-name,
+  #staff-app .staff-chip .sc-station,
+  #staff-app .nav-btn span,
+  #staff-app .logout-btn span{
+    display:none;
+  }
+
+  #staff-app .sidebar-brand,
+  #staff-app .nav-btn,
+  #staff-app .logout-btn{
+    justify-content:center;
+  }
+
+  #staff-app .staff-chip{
+    padding:10px 6px;
   }
 
   #staff-app .queue-row{
     flex-wrap:wrap;
+    gap:9px;
   }
 
   #staff-app .queue-row-info{
-    min-width:calc(100% - 100px);
-  }
-
-  #staff-app .row-action{
-    margin-left:auto;
+    min-width:calc(100% - 105px);
   }
 }
