@@ -714,7 +714,274 @@ import {
       "none";
 
   }
+    
+/* =========================
+   SAVED STATIONS
+   ========================= */
 
+async function loadSavedStations(){
+
+  try{
+
+    var user = auth.currentUser;
+
+    if(!user){
+      return;
+    }
+
+    var userRef = doc(
+      db,
+      'users',
+      user.uid
+    );
+
+    var snap = await getDoc(userRef);
+
+    var data =
+      snap.exists()
+        ? snap.data()
+        : {};
+
+    var savedStations =
+      Array.isArray(data.savedStations)
+        ? data.savedStations
+        : [];
+
+
+    /* =========================
+       COUNT
+       ========================= */
+
+    var countEl =
+      el('saved-stations-count');
+
+    if(countEl){
+
+      if(savedStations.length === 0){
+
+        countEl.textContent =
+          'No stations saved';
+
+      }
+      else if(savedStations.length === 1){
+
+        countEl.textContent =
+          '1 station pinned';
+
+      }
+      else{
+
+        countEl.textContent =
+          savedStations.length +
+          ' stations pinned';
+
+      }
+
+    }
+
+
+    /* =========================
+       LIST CONTAINER
+       ========================= */
+
+    var listEl =
+      el('saved-stations-list');
+
+    if(!listEl){
+      return;
+    }
+
+    listEl.innerHTML = '';
+
+
+    /* =========================
+       NO SAVED STATIONS
+       ========================= */
+
+    if(savedStations.length === 0){
+
+      listEl.innerHTML =
+        '<div class="saved-empty">' +
+
+          '<div class="saved-empty-icon">☆</div>' +
+
+          '<div class="saved-empty-title">' +
+            'No saved stations' +
+          '</div>' +
+
+          '<div class="saved-empty-text">' +
+            'Save your favourite fuel stations ' +
+            'to find them quickly.' +
+          '</div>' +
+
+        '</div>';
+
+      return;
+
+    }
+
+
+    /* =========================
+       RENDER SAVED STATIONS
+       ========================= */
+
+    savedStations.forEach(
+      function(stationId){
+
+        var station =
+          STATIONS.find(
+            function(st){
+              return st.id === stationId;
+            }
+          );
+
+        if(!station){
+          return;
+        }
+
+
+        var card =
+          document.createElement('div');
+
+        card.className =
+          'saved-station-card';
+
+
+        var wait =
+          estWait(station);
+
+
+        card.innerHTML =
+
+          '<div class="saved-station-top">' +
+
+            '<div>' +
+
+              '<div class="saved-station-brand">' +
+                station.brand +
+              '</div>' +
+
+              '<div class="saved-station-name">' +
+                station.name.replace(
+                  station.brand + ' — ',
+                  ''
+                ) +
+              '</div>' +
+
+            '</div>' +
+
+            '<div class="saved-star">★</div>' +
+
+          '</div>' +
+
+
+          '<div class="saved-station-address">' +
+            station.addr +
+          '</div>' +
+
+
+          '<div class="saved-station-info">' +
+
+            '<span>' +
+              station.dist.toFixed(1) +
+              ' km' +
+            '</span>' +
+
+            '<span>•</span>' +
+
+            '<span>' +
+              station.queue +
+              ' in queue' +
+            '</span>' +
+
+            '<span>•</span>' +
+
+            '<span>' +
+              wait +
+              ' min wait' +
+            '</span>' +
+
+          '</div>' +
+
+
+          '<button class="saved-open-btn">' +
+            'Open station' +
+          '</button>';
+
+
+        var openButton =
+          card.querySelector(
+            '.saved-open-btn'
+          );
+
+
+        openButton.addEventListener(
+          'click',
+          function(){
+
+            openDetail(
+              station.id
+            );
+
+          }
+        );
+
+
+        listEl.appendChild(
+          card
+        );
+
+      }
+    );
+
+
+    console.log(
+      'Saved station cards rendered:',
+      savedStations
+    );
+
+  }
+  catch(error){
+
+    console.error(
+      'Saved stations loading error:',
+      error
+    );
+
+  }
+
+}
+
+      /* =========================
+   SAVED STATIONS TOGGLE
+   ========================= */
+
+var savedStationsButton =
+  el('btn-saved-stations');
+
+if(savedStationsButton){
+
+  savedStationsButton.addEventListener(
+    'click',
+    async function(){
+
+      var listEl =
+        el('saved-stations-list');
+
+      if(!listEl){
+        return;
+      }
+
+      /* Refresh latest saved stations */
+      await loadSavedStations();
+
+      /* Toggle */
+      listEl.classList.toggle('show');
+
+    }
+  );
+
+}
 
   /* =========================
      LOGIN / SIGNUP TOGGLE
@@ -978,8 +1245,8 @@ import {
      ========================= */
 
   onAuthStateChanged(
-    auth,
-    function(user){
+    auth, 
+     async function(user){
 
     if(user){
 
@@ -1004,7 +1271,10 @@ import {
       .style.display = 'flex';
 
   }
+    await loadCustomerProfile();
+    await loadSavedStations();
 
+ 
   showScreen(
     "screen-location"
   );
@@ -1025,7 +1295,221 @@ import {
 
     }
   );
+   /* =========================
+   SAVE / UNSAVE STATION
+   ========================= */
 
+async function toggleSavedStation(){
+
+  try{
+
+    var user =
+      auth.currentUser;
+
+    var station =
+      state.currentStation;
+
+    if(!user){
+
+      alert(
+        'Please login first.'
+      );
+
+      return;
+
+    }
+
+    if(!station){
+
+      return;
+
+    }
+
+
+    var userRef =
+      doc(
+        db,
+        'users',
+        user.uid
+      );
+
+
+    var snap =
+      await getDoc(userRef);
+
+
+    var data =
+      snap.exists()
+        ? snap.data()
+        : {};
+
+
+    var savedStations =
+      Array.isArray(data.savedStations)
+        ? data.savedStations.slice()
+        : [];
+
+
+    var index =
+      savedStations.indexOf(
+        station.id
+      );
+
+
+    if(index === -1){
+
+      /* SAVE */
+
+      savedStations.push(
+        station.id
+      );
+
+    }
+    else{
+
+      /* UNSAVE */
+
+      savedStations.splice(
+        index,
+        1
+      );
+
+    }
+
+
+    await setDoc(
+
+      userRef,
+
+      {
+        savedStations:
+          savedStations,
+
+        updatedAt:
+          serverTimestamp()
+      },
+
+      {
+        merge:true
+      }
+
+    );
+
+
+    updateSaveStationButton();
+
+
+    console.log(
+      'Saved stations:',
+      savedStations
+    );
+
+  }
+  catch(error){
+
+    console.error(
+      'Save station error:',
+      error
+    );
+
+    alert(
+      'Could not update saved station.'
+    );
+
+  }
+
+}
+/* =========================
+   UPDATE SAVE BUTTON
+   ========================= */
+
+async function updateSaveStationButton(){
+
+  var button =
+    el('btn-save-station');
+
+  var user =
+    auth.currentUser;
+
+  var station =
+    state.currentStation;
+
+
+  if(!button || !user || !station){
+
+    return;
+
+  }
+
+
+  try{
+
+    var snap =
+      await getDoc(
+        doc(
+          db,
+          'users',
+          user.uid
+        )
+      );
+
+
+    var data =
+      snap.exists()
+        ? snap.data()
+        : {};
+
+
+    var savedStations =
+      Array.isArray(data.savedStations)
+        ? data.savedStations
+        : [];
+
+
+    var isSaved =
+      savedStations.includes(
+        station.id
+      );
+
+
+    if(isSaved){
+
+      button.textContent =
+        '★';
+
+      button.classList.add(
+        'saved'
+      );
+
+      button.title =
+        'Remove saved station';
+
+    }
+    else{
+
+      button.textContent =
+        '☆';
+
+      button.classList.remove(
+        'saved'
+      );
+
+      button.title =
+        'Save station';
+
+    }
+
+  }
+  catch(error){
+
+    console.error(
+      'Save button update error:',
+      error
+    );
+
+  }
+
+}
    /* =========================
    LOCATION SCREEN
    ========================= */
@@ -1541,6 +2025,8 @@ el('view-segmented').addEventListener(
 
           if(tab==='profile'){
 
+            await loadSavedStations();
+
             showScreen(
               'screen-profile'
             );
@@ -1555,7 +2041,9 @@ el('view-segmented').addEventListener(
 
   el('btn-go-profile').addEventListener(
     'click',
-    function(){
+     async function(){
+ 
+       await loadSavedStations();
 
       showScreen(
         'screen-profile'
@@ -1564,6 +2052,88 @@ el('view-segmented').addEventListener(
     }
   );
 
+
+    /* =========================
+   UPDATE SAVE STATION BUTTON
+   ========================= */
+
+async function updateSaveStationButton(){
+
+  var button =
+    el('btn-save-station');
+
+  var user =
+    auth.currentUser;
+
+  var station =
+    state.currentStation;
+
+  if(!button || !user || !station){
+    return;
+  }
+
+  try{
+
+    var snap =
+      await getDoc(
+        doc(
+          db,
+          'users',
+          user.uid
+        )
+      );
+
+    var data =
+      snap.exists()
+        ? snap.data()
+        : {};
+
+    var savedStations =
+      Array.isArray(data.savedStations)
+        ? data.savedStations
+        : [];
+
+    var isSaved =
+      savedStations.includes(
+        station.id
+      );
+
+    if(isSaved){
+
+      button.textContent = '★';
+
+      button.classList.add(
+        'saved'
+      );
+
+      button.title =
+        'Remove saved station';
+
+    }
+    else{
+
+      button.textContent = '☆';
+
+      button.classList.remove(
+        'saved'
+      );
+
+      button.title =
+        'Save station';
+
+    }
+
+  }
+  catch(error){
+
+    console.error(
+      'Save button update error:',
+      error
+    );
+
+  }
+
+}
 
   /* =========================
      STATION DETAIL
@@ -1580,6 +2150,8 @@ el('view-segmented').addEventListener(
 
 
     state.currentStation=st;
+
+    updateSaveStationButton();
 
 
     el('d-brand').textContent=
@@ -1732,7 +2304,30 @@ el('view-segmented').addEventListener(
       'screen-detail'
     );
 
-  }
+  }   
+
+
+  // phir add kr skte hai 
+
+  /* =========================
+   SAVE STATION BUTTON
+   ========================= */
+
+var saveStationButton =
+  el('btn-save-station');
+
+if(saveStationButton){
+
+  saveStationButton.addEventListener(
+    'click',
+    function(){
+
+      toggleSavedStation();
+
+    }
+  );
+
+}
 
 
   el('btn-back-detail').addEventListener(
@@ -3918,6 +4513,714 @@ async function loadUserBookings(){
     );
 
   }
+   
+  /* =========================
+   PROFILE — FIRESTORE
+   ========================= */
+
+async function loadCustomerProfile(){
+
+  try{
+
+    var user = auth.currentUser;
+
+    if(!user){
+      return;
+    }
+
+    var userRef = doc(
+      db,
+      'users',
+      user.uid
+    );
+
+    var snap = await getDoc(userRef);
+
+    var data = {};
+
+    if(snap.exists()){
+      data = snap.data();
+    }
+
+    /* =========================
+       BASIC USER INFORMATION
+       ========================= */
+
+    var name =
+      data.name ||
+      user.displayName ||
+      'User';
+
+    var email =
+      user.email ||
+      data.email ||
+      '-';
+
+    var phone =
+      data.phone ||
+      'Phone not added';
+
+
+    /* =========================
+       SHOW PROFILE
+       ========================= */
+
+    var nameEl =
+      el('profile-name');
+
+    var emailEl =
+      el('profile-email');
+
+    var phoneEl =
+      el('profile-phone');
+
+    var avatarEl =
+      el('profile-avatar');
+
+
+    if(nameEl){
+      nameEl.textContent =
+        name;
+    }
+
+    if(emailEl){
+      emailEl.textContent =
+        email;
+    }
+
+    if(phoneEl){
+      phoneEl.textContent =
+        phone;
+    }
+
+
+    /* =========================
+       CREATE INITIALS
+       ========================= */
+
+    if(avatarEl){
+
+      var initials =
+        name
+          .trim()
+          .split(/\s+/)
+          .map(function(part){
+            return part.charAt(0);
+          })
+          .join('')
+          .substring(0,2)
+          .toUpperCase();
+
+      avatarEl.textContent =
+        initials || 'U';
+    }
+
+
+    /* =========================
+       VEHICLE
+       ========================= */
+
+    var vehicleNumber =
+      data.vehicleNumber ||
+      '';
+
+    var vehicleType =
+      data.vehicleType ||
+      '';
+
+    var vehicleFuel =
+      data.vehicleFuel ||
+      '';
+
+
+    var vehicleEl =
+      el('profile-vehicle');
+
+
+    if(vehicleEl){
+
+      if(vehicleNumber){
+
+        var vehicleText =
+          vehicleNumber;
+
+        if(vehicleType){
+          vehicleText +=
+            ' · ' + vehicleType;
+        }
+
+        if(vehicleFuel){
+          vehicleText +=
+            ' · ' + vehicleFuel;
+        }
+
+        vehicleEl.textContent =
+          vehicleText;
+
+      }
+      else{
+
+        vehicleEl.textContent =
+          'Vehicle not added';
+
+      }
+
+    }
+
+
+    /* =========================
+       EDIT FORM VALUES
+       ========================= */
+
+    if(el('edit-profile-name')){
+      el('edit-profile-name').value =
+        name === 'User' ? '' : name;
+    }
+
+    if(el('edit-profile-phone')){
+      el('edit-profile-phone').value =
+        data.phone || '';
+    }
+
+    if(el('edit-vehicle-number')){
+      el('edit-vehicle-number').value =
+        data.vehicleNumber || '';
+    }
+
+    if(el('edit-vehicle-type')){
+      el('edit-vehicle-type').value =
+        data.vehicleType || 'Sedan';
+    }
+
+    if(el('edit-vehicle-fuel')){
+      el('edit-vehicle-fuel').value =
+        data.vehicleFuel || 'Petrol';
+    }
+
+    /* =========================
+   RESTORE PROFILE PHOTO
+   ========================= */
+
+var savedPhoto = null;
+
+try{
+
+  savedPhoto =
+    localStorage.getItem(
+      'pumpline_profile_photo_' + user.uid
+    );
+
+}
+catch(error){
+
+  console.error(
+    'Profile photo load error:',
+    error
+  );
+
+}
+
+
+var photoEl =
+  el('profile-photo');
+
+var avatarEl =
+  el('profile-avatar');
+
+
+if(savedPhoto){
+
+  if(photoEl){
+
+    photoEl.src =
+      savedPhoto;
+
+    photoEl.style.display =
+      'block';
+
+  }
+
+  if(avatarEl){
+
+    avatarEl.style.display =
+      'none';
+
+  }
+
+}
+else{
+
+  if(photoEl){
+
+    photoEl.style.display =
+      'none';
+
+  }
+
+  if(avatarEl){
+
+    avatarEl.style.display =
+      'flex';
+
+  }
+
+}
+
+
+    console.log(
+      'Customer profile loaded:',
+      data
+    );
+
+  }
+  catch(error){
+
+    console.error(
+      'Profile loading error:',
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================
+   SAVE CUSTOMER PROFILE
+   ========================= */
+
+async function saveCustomerProfile(){
+
+  try{
+
+    var user =
+      auth.currentUser;
+
+    if(!user){
+
+      alert(
+        'Please login first.'
+      );
+
+      return;
+
+    }
+
+
+    var name =
+      el('edit-profile-name')
+        ? el('edit-profile-name').value.trim()
+        : '';
+
+    var phone =
+      el('edit-profile-phone')
+        ? el('edit-profile-phone').value.trim()
+        : '';
+
+    var vehicleNumber =
+      el('edit-vehicle-number')
+        ? el('edit-vehicle-number').value.trim().toUpperCase()
+        : '';
+
+    var vehicleType =
+      el('edit-vehicle-type')
+        ? el('edit-vehicle-type').value
+        : 'Sedan';
+
+    var vehicleFuel =
+      el('edit-vehicle-fuel')
+        ? el('edit-vehicle-fuel').value
+        : 'Petrol';
+
+
+    /* =========================
+       VALIDATION
+       ========================= */
+
+    if(!name){
+
+      alert(
+        'Please enter your name.'
+      );
+
+      return;
+
+    }
+
+
+    if(
+      phone &&
+      !/^[+]?[0-9]{10,13}$/.test(
+        phone.replace(/\s/g,'')
+      )
+    ){
+
+      alert(
+        'Please enter a valid phone number.'
+      );
+
+      return;
+
+    }
+
+
+    /* =========================
+       SAVE TO FIRESTORE
+       ========================= */
+
+    await setDoc(
+
+      doc(
+        db,
+        'users',
+        user.uid
+      ),
+
+      {
+
+        uid:
+          user.uid,
+
+        email:
+          user.email || '',
+
+        role:
+          'customer',
+
+        name:
+          name,
+
+        phone:
+          phone,
+
+        vehicleNumber:
+          vehicleNumber,
+
+        vehicleType:
+          vehicleType,
+
+        vehicleFuel:
+          vehicleFuel,
+
+        updatedAt:
+          serverTimestamp()
+
+      },
+
+      {
+        merge:true
+      }
+
+    );
+
+
+    /* =========================
+       UPDATE PROFILE UI
+       ========================= */
+
+    await loadCustomerProfile();
+
+
+    /* =========================
+       CLOSE EDIT BOX
+       ========================= */
+
+    var editBox =
+      el('profile-edit-box');
+
+    if(editBox){
+
+      editBox.style.display =
+        'none';
+
+    }
+
+
+    alert(
+      'Profile updated successfully!'
+    );
+
+
+    console.log(
+      'Profile saved successfully'
+    );
+
+  }
+  catch(error){
+
+    console.error(
+      'Profile save error:',
+      error
+    );
+
+    alert(
+      'Profile save failed. Please try again.'
+    );
+
+  }
+
+}
+
+/* =========================
+   PROFILE PHOTO
+   ========================= */
+
+var changePhotoButton =
+  el('btn-change-photo');
+
+var photoInput =
+  el('profile-photo-input');
+
+
+if(changePhotoButton && photoInput){
+
+  changePhotoButton.addEventListener(
+    'click',
+    function(){
+
+      photoInput.click();
+
+    }
+  );
+
+
+  photoInput.addEventListener(
+    'change',
+    function(){
+
+      var file =
+        photoInput.files &&
+        photoInput.files[0];
+
+      if(!file){
+        return;
+      }
+
+
+      if(!file.type.startsWith('image/')){
+
+        alert(
+          'Please select an image file.'
+        );
+
+        photoInput.value = '';
+
+        return;
+
+      }
+
+
+      if(file.size > 1024 * 1024){
+
+        alert(
+          'Please select an image smaller than 1 MB.'
+        );
+
+        photoInput.value = '';
+
+        return;
+
+      }
+
+
+      var reader =
+        new FileReader();
+
+
+      reader.onload =
+        function(event){
+
+          var imageData =
+            event.target.result;
+
+          var user =
+            auth.currentUser;
+
+
+          if(!user){
+
+            alert(
+              'Please login first.'
+            );
+
+            return;
+
+          }
+
+
+          try{
+
+            localStorage.setItem(
+              'pumpline_profile_photo_' + user.uid,
+              imageData
+            );
+
+
+            var photoEl =
+              el('profile-photo');
+
+            var avatarEl =
+              el('profile-avatar');
+
+
+            if(photoEl){
+
+              photoEl.src =
+                imageData;
+
+              photoEl.style.display =
+                'block';
+
+            }
+
+
+            if(avatarEl){
+
+              avatarEl.style.display =
+                'none';
+
+            }
+
+
+            console.log(
+              'Profile photo saved locally.'
+            );
+
+          }
+          catch(error){
+
+            console.error(
+              'Profile photo error:',
+              error
+            );
+
+            alert(
+              'Photo could not be saved. Try a smaller image.'
+            );
+
+          }
+
+        };
+
+
+      reader.readAsDataURL(file);
+
+    }
+  );
+
+}
+
+
+/* =========================
+   PROFILE EVENTS
+   ========================= */
+
+
+/* EDIT BUTTON */
+
+var editProfileButton =
+  el('btn-edit-profile');
+
+if(editProfileButton){
+
+  editProfileButton.addEventListener(
+    'click',
+    async function(){
+
+      await loadCustomerProfile();
+
+      var editBox =
+        el('profile-edit-box');
+
+      if(editBox){
+
+        editBox.style.display =
+          editBox.style.display === 'none'
+            ? 'block'
+            : 'none';
+
+      }
+
+    }
+  );
+
+}
+
+
+/* CANCEL */
+
+var cancelProfileButton =
+  el('btn-cancel-profile');
+
+if(cancelProfileButton){
+
+  cancelProfileButton.addEventListener(
+    'click',
+    function(){
+
+      var editBox =
+        el('profile-edit-box');
+
+      if(editBox){
+
+        editBox.style.display =
+          'none';
+
+      }
+
+    }
+  );
+
+}
+
+
+/* SAVE */
+
+var saveProfileButton =
+  el('btn-save-profile');
+
+if(saveProfileButton){
+
+  saveProfileButton.addEventListener(
+    'click',
+    saveCustomerProfile
+  );
+
+}
+
+
+/* VEHICLE ROW → EDIT PROFILE */
+
+var vehicleRow =
+  el('profile-vehicle-row');
+
+if(vehicleRow){
+
+  vehicleRow.addEventListener(
+    'click',
+    function(){
+
+      var editBox =
+        el('profile-edit-box');
+
+      if(editBox){
+
+        editBox.style.display =
+          'block';
+
+        editBox.scrollIntoView({
+          behavior:'smooth',
+          block:'start'
+        });
+
+      }
+
+    }
+  );
+
+}
+
+
 
 
   /* =========================

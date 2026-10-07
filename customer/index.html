@@ -194,8 +194,20 @@
       <div class="scroll">
         <div class="detail-hero">
           <div class="detail-top-row">
-            <span class="small" id="d-brand">Indian Oil</span>
-          </div>
+
+  <span class="small" id="d-brand">
+    Indian Oil
+  </span>
+
+  <button
+    class="save-station-btn"
+    id="btn-save-station"
+    title="Save station"
+  >
+    ☆
+  </button>
+
+</div>
           <div class="detail-badge" id="d-badge">
             <span class="pulse-dot"></span>
             <span id="d-badge-text">Live · 8 in queue</span>
@@ -693,54 +705,421 @@
     </section>
 
     <!-- ============ SCREEN 8: PROFILE ============ -->
-    <section class="screen" id="screen-profile">
-      <div class="topbar">
-        <div class="title">Profile</div>
-        <span style="width:36px;"></span>
+    <!-- ============ SCREEN 8: PROFILE ============ -->
+<section class="screen" id="screen-profile">
+
+  <div class="topbar">
+    <div class="title">Profile</div>
+    <button class="icon-btn" id="btn-edit-profile" title="Edit Profile">
+      ✎
+    </button>
+  </div>
+
+  <div class="scroll">
+
+    <!-- PROFILE HERO -->
+    <div class="profile-hero">
+
+      <div class="profile-photo-wrap">
+        <img
+          id="profile-photo"
+          class="profile-photo"
+          src=""
+          alt="Profile"
+          style="display:none;"
+        >
+
+        <div id="profile-avatar" class="avatar">
+          U
+        </div>
+
+        <button id="btn-change-photo" class="photo-edit-btn">
+          ✎
+        </button>
+
+        <input
+          type="file"
+          id="profile-photo-input"
+          accept="image/*"
+          style="display:none;"
+        >
       </div>
-      <div class="scroll">
-        <div class="profile-hero">
-          <div class="avatar">FQ</div>
-          <div>
-            <div class="title" style="font-size:16px;">Faisal Q.</div>
-            <div class="small">+91 98XXX XXX12</div>
-          </div>
+
+      <div>
+        <div
+          class="title"
+          id="profile-name"
+          style="font-size:16px;"
+        >
+          User
         </div>
-        <div class="profile-row">
-          <div><div class="pr-label">Vehicle</div><div class="pr-sub">MH 02 AB 1234 · Sedan · Petrol</div></div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#5B6478" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+        <div
+          class="small"
+          id="profile-email"
+        >
+          -
         </div>
-        <div class="profile-row">
-          <div><div class="pr-label">Saved stations</div><div class="pr-sub">2 stations pinned</div></div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#5B6478" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="profile-row">
-          <div><div class="pr-label">Payment methods</div><div class="pr-sub">UPI, 1 card saved</div></div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#5B6478" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="profile-row">
-          <div><div class="pr-label">Notifications</div><div class="pr-sub">Queue alerts on</div></div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#5B6478" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="profile-row" id="btn-logout">
-          <div><div class="pr-label" style="color:#FF5C5C;">Log out</div></div>
+
+        <div
+          class="small"
+          id="profile-phone"
+          style="margin-top:3px;"
+        >
+          Phone not added
         </div>
       </div>
-      <nav class="bottom-nav">
-        <button class="nav-item" data-tab="home">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1v-9z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-          <span class="nav-lbl">Home</span>
-        </button>
-        <button class="nav-item" data-tab="history">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 7v5l3.5 2M21 12a9 9 0 11-3-6.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <span class="nav-lbl">Bookings</span>
-        </button>
-        <button class="nav-item is-active" data-tab="profile">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.6-3.6 4.8-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <span class="nav-lbl">Profile</span>
-        </button>
-      </nav>
-    </section>
+
+    </div>
+
+
+    <!-- EDIT PROFILE FORM -->
+
+    <div
+      id="profile-edit-box"
+      style="display:none;"
+    >
+
+      <div class="profile-edit-card">
+
+        <div class="pr-label">Full Name</div>
+
+        <input
+          type="text"
+          id="edit-profile-name"
+          class="profile-input"
+          placeholder="Enter your name"
+        >
+
+
+        <div class="pr-label">Phone Number</div>
+
+        <input
+          type="tel"
+          id="edit-profile-phone"
+          class="profile-input"
+          placeholder="+91XXXXXXXXXX"
+        >
+
+
+        <div class="pr-label">Vehicle Number</div>
+
+        <input
+          type="text"
+          id="edit-vehicle-number"
+          class="profile-input"
+          placeholder="MH 02 AB 1234"
+        >
+
+
+        <div class="pr-label">Vehicle Type</div>
+
+        <select
+          id="edit-vehicle-type"
+          class="profile-input"
+        >
+          <option value="Sedan">Sedan</option>
+          <option value="SUV">SUV</option>
+          <option value="Hatchback">Hatchback</option>
+          <option value="Bike">Bike</option>
+          <option value="Scooter">Scooter</option>
+          <option value="Other">Other</option>
+        </select>
+
+
+        <div class="pr-label">Fuel Type</div>
+
+        <select
+          id="edit-vehicle-fuel"
+          class="profile-input"
+        >
+          <option value="Petrol">Petrol</option>
+          <option value="Diesel">Diesel</option>
+          <option value="CNG">CNG</option>
+          <option value="EV">EV</option>
+        </select>
+
+
+        <div class="profile-edit-buttons">
+
+          <button
+            class="secondary-btn"
+            id="btn-cancel-profile"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="primary-btn"
+            id="btn-save-profile"
+          >
+            Save Changes
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- VEHICLE -->
+
+    <div
+      class="profile-row"
+      id="profile-vehicle-row"
+    >
+
+      <div>
+
+        <div class="pr-label">
+          Vehicle
+        </div>
+
+        <div
+          class="pr-sub"
+          id="profile-vehicle"
+        >
+          Vehicle not added
+        </div>
+
+      </div>
+
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+        <path
+          d="M9 18l6-6-6-6"
+          stroke="#5B6478"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+
+    </div>
+
+
+    <!-- SAVED STATIONS -->
+
+   <div class="profile-row" id="btn-saved-stations">
+  <div>
+    <div class="pr-label">Saved stations</div>
+
+    <div
+      class="pr-sub"
+      id="saved-stations-count"
+    >
+      No stations saved
+    </div>
+  </div>
+
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <path
+      d="M9 18l6-6-6-6"
+      stroke="#5B6478"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+</div>
+<!-- SAVED STATIONS LIST -->
+<div id="saved-stations-list" class="saved-stations-list"></div>
+
+
+      
+
+
+    <!-- PAYMENT -->
+
+    <div class="profile-row">
+
+      <div>
+
+        <div class="pr-label">
+          Payment methods
+        </div>
+
+        <div class="pr-sub">
+          UPI, 1 card saved
+        </div>
+
+      </div>
+
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+        <path
+          d="M9 18l6-6-6-6"
+          stroke="#5B6478"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+
+    </div>
+
+
+    <!-- NOTIFICATIONS -->
+
+    <div class="profile-row">
+
+      <div>
+
+        <div class="pr-label">
+          Notifications
+        </div>
+
+        <div class="pr-sub">
+          Queue alerts on
+        </div>
+
+      </div>
+
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+        <path
+          d="M9 18l6-6-6-6"
+          stroke="#5B6478"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+
+    </div>
+
+
+    <!-- LOGOUT -->
+
+    <div
+      class="profile-row"
+      id="btn-logout"
+      style="cursor:pointer;"
+    >
+
+      <div>
+
+        <div
+          class="pr-label"
+          style="color:#FF5C5C;"
+        >
+          Log out
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- BOTTOM NAV -->
+
+  <nav class="bottom-nav">
+
+    <button
+      class="nav-item"
+      data-tab="home"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+        <path
+          d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1v-9z"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linejoin="round"
+        />
+      </svg>
+
+      <span class="nav-lbl">
+        Home
+      </span>
+
+    </button>
+
+
+    <button
+      class="nav-item"
+      data-tab="history"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+        <path
+          d="M12 7v5l3.5 2M21 12a9 9 0 11-3-6.7"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+        />
+      </svg>
+
+      <span class="nav-lbl">
+        Bookings
+      </span>
+
+    </button>
+
+
+    <button
+      class="nav-item is-active"
+      data-tab="profile"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+        <circle
+          cx="12"
+          cy="8"
+          r="3.4"
+          stroke="currentColor"
+          stroke-width="1.8"
+        />
+
+        <path
+          d="M4.5 20c1.6-3.6 4.8-5.5 7.5-5.5s5.9 1.9 7.5 5.5"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+        />
+      </svg>
+
+      <span class="nav-lbl">
+        Profile
+      </span>
+
+    </button>
+
+  </nav>
+
+</section>
 
   </div>
 </div>

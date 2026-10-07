@@ -8,6 +8,8 @@ import {
   getFirestore 
  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
+ 
+
 const firebaseConfig = {
   apiKey: "AIzaSyAc3aMkze1st0gi7ZUFgd0wwejDkOFt9HE",
   authDomain: "pumpline-4319e.firebaseapp.com",
@@ -27,6 +29,6 @@ const db = getFirestore(app);
 // Make available to other JavaScript files
 window.firebaseApp = app;
 window.auth = auth;
-window.db = db;
+window.db = db; 
 
 console.log("Firebase connected successfully!");

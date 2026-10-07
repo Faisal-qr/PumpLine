@@ -1670,3 +1670,279 @@ body{ background:linear-gradient(135deg,#F3EFE7 0%,#E9EEF5 100%); }
     box-shadow:0 18px 50px rgba(31,41,55,.14);
   }
 }
+
+/* ================= PROFILE FUNCTIONAL UI ================= */
+
+.profile-photo-wrap{
+  position:relative;
+  width:52px;
+  height:52px;
+  flex-shrink:0;
+}
+
+.profile-photo{
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid var(--amber);
+}
+
+.profile-photo-wrap .avatar{
+  width:52px;
+  height:52px;
+}
+
+.photo-edit-btn{
+  position:absolute;
+  right:-5px;
+  bottom:-5px;
+
+  width:22px;
+  height:22px;
+
+  border-radius:50%;
+  border:2px solid var(--bg);
+
+  background:var(--amber);
+  color:#1A1300;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  cursor:pointer;
+  font-size:12px;
+  font-weight:700;
+}
+
+.icon-btn{
+  width:36px;
+  height:36px;
+
+  border:1px solid var(--line);
+  border-radius:10px;
+
+  background:var(--card);
+  color:var(--text);
+
+  cursor:pointer;
+
+  font-size:18px;
+}
+
+.profile-edit-card{
+  margin:16px 20px;
+  padding:18px;
+
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+}
+
+.profile-input{
+  width:100%;
+  box-sizing:border-box;
+
+  margin-top:7px;
+  margin-bottom:15px;
+
+  padding:12px 13px;
+
+  border:1px solid var(--line);
+  border-radius:9px;
+
+  background:var(--bg);
+  color:var(--text);
+
+  outline:none;
+}
+
+.profile-input:focus{
+  border-color:var(--amber);
+}
+
+.profile-edit-buttons{
+  display:flex;
+  gap:10px;
+  margin-top:5px;
+}
+
+.profile-edit-buttons button{
+  flex:1;
+}
+
+.secondary-btn{
+  padding:12px 14px;
+
+  border:1px solid var(--line);
+  border-radius:10px;
+
+  background:transparent;
+  color:var(--text);
+
+  cursor:pointer;
+}
+
+#profile-vehicle-row{
+  cursor:pointer;
+}
+
+
+.save-station-btn{
+  width:38px;
+  height:38px;
+
+  border-radius:50%;
+  border:1px solid var(--line);
+
+  background:var(--card);
+  color:#F3F5F8;
+
+  font-size:22px;
+  line-height:1;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  cursor:pointer;
+
+  transition:0.2s ease;
+}
+
+.save-station-btn.saved{
+  color:var(--amber);
+  border-color:var(--amber);
+}
+
+/* =========================
+   SAVED STATIONS
+   ========================= */
+
+.saved-stations-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin:12px 0 18px;
+}
+
+
+.saved-station-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:15px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+
+.saved-station-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+
+
+.saved-station-brand{
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:3px;
+}
+
+
+.saved-station-name{
+  font-size:16px;
+  font-weight:700;
+  color:#F3F5F8;
+}
+
+
+.saved-star{
+  color:var(--amber);
+  font-size:20px;
+  line-height:1;
+}
+
+
+.saved-station-address{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:9px;
+  line-height:1.4;
+}
+
+
+.saved-station-info{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:11px;
+  font-size:12px;
+  color:#AEB6C5;
+}
+
+
+.saved-open-btn{
+  width:100%;
+  margin-top:13px;
+  padding:11px 14px;
+  border:0;
+  border-radius:10px;
+  background:var(--amber);
+  color:#111;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+
+.saved-open-btn:active{
+  transform:scale(0.98);
+}
+
+
+/* EMPTY STATE */
+
+.saved-empty{
+  text-align:center;
+  padding:24px 16px;
+  border:1px dashed var(--line);
+  border-radius:16px;
+  background:rgba(255,255,255,0.02);
+}
+
+
+.saved-empty-icon{
+  font-size:32px;
+  color:var(--amber);
+  margin-bottom:8px;
+}
+
+
+.saved-empty-title{
+  font-size:15px;
+  font-weight:700;
+  color:#F3F5F8;
+}
+
+
+.saved-empty-text{
+  margin-top:5px;
+  font-size:12px;
+  line-height:1.5;
+  color:var(--muted);
+}
+
+.saved-stations-list{
+  display:none;
+  flex-direction:column;
+  gap:12px;
+  margin:12px 0 18px;
+}
+
+.saved-stations-list.show{
+  display:flex;
+}
