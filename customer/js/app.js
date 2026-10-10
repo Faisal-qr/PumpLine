@@ -194,304 +194,240 @@ import {
   };
 
 
-  var STATIONS = [
+ var STATIONS = [
 
-    {
+  {
+    id: 's1',
+    brand: 'Indian Oil',
+    brandColor: '#E4572E',
 
-      id:'s1',
+    name: 'Indian Oil — Linking Road',
+    addr: '241 Linking Road, Bandra West, Mumbai, Maharashtra 400050',
 
-      brand:'Indian Oil',
+    latitude: 19.0625,
+    longitude: 72.8297,
 
-      brandColor:'#E4572E',
+    dist: 0.6,
+    x: 38,
+    y: 44,
 
-      name:
-        'Indian Oil — Linking Road',
+    queue: 8,
+    avgService: 4,
 
-      addr:
-        'Linking Road, Bandra West',
-
-      dist:0.6,
-
-      x:38,
-
-      y:44,
-
-      queue:8,
-
-      avgService:4,
-
-      pumps:{
-        active:3,
-        total:4
-      },
-
-      fuels:{
-
-        Petrol:{
-          price:104.50,
-          stock:'ok'
-        },
-
-        Diesel:{
-          price:92.10,
-          stock:'ok'
-        },
-
-        CNG:{
-          price:76.00,
-          stock:'low'
-        }
-
-      }
-
+    pumps: {
+      active: 3,
+      total: 4
     },
 
-
-    {
-
-      id:'s2',
-
-      brand:'HP',
-
-      brandColor:'#F7941D',
-
-      name:
-        'HP Petrol Pump — Turner Road',
-
-      addr:
-        'Turner Road, Bandra West',
-
-      dist:1.1,
-
-      x:60,
-
-      y:30,
-
-      queue:3,
-
-      avgService:3,
-
-      pumps:{
-        active:4,
-        total:4
+    fuels: {
+      Petrol: {
+        price: 104.50,
+        stock: 'ok'
       },
-
-      fuels:{
-
-        Petrol:{
-          price:104.62,
-          stock:'ok'
-        },
-
-        Diesel:{
-          price:92.30,
-          stock:'ok'
-        }
-
-      }
-
-    },
-
-
-    {
-
-      id:'s3',
-
-      brand:'Bharat Petroleum',
-
-      brandColor:'#0072BC',
-
-      name:
-        'Bharat Petroleum — SV Road',
-
-      addr:
-        'S.V. Road, Khar West',
-
-      dist:1.8,
-
-      x:20,
-
-      y:70,
-
-      queue:14,
-
-      avgService:5,
-
-      pumps:{
-        active:2,
-        total:4
+      Diesel: {
+        price: 92.10,
+        stock: 'ok'
       },
-
-      fuels:{
-
-        Petrol:{
-          price:104.45,
-          stock:'low'
-        },
-
-        Diesel:{
-          price:91.95,
-          stock:'ok'
-        },
-
-        CNG:{
-          price:75.80,
-          stock:'ok'
-        }
-
+      CNG: {
+        price: 76.00,
+        stock: 'low'
       }
-
-    },
-
-
-    {
-
-      id:'s4',
-
-      brand:'Shell',
-
-      brandColor:'#FBCE07',
-
-      name:
-        'Shell — Hill Road',
-
-      addr:
-        'Hill Road, Bandra West',
-
-      dist:2.3,
-
-      x:75,
-
-      y:60,
-
-      queue:0,
-
-      avgService:4,
-
-      pumps:{
-        active:3,
-        total:3
-      },
-
-      fuels:{
-
-        Petrol:{
-          price:106.10,
-          stock:'ok'
-        },
-
-        Diesel:{
-          price:93.40,
-          stock:'ok'
-        },
-
-        EV:{
-          price:18.5,
-          stock:'ok'
-        }
-
-      }
-
-    },
-
-
-    {
-
-      id:'s5',
-
-      brand:'Reliance',
-
-      brandColor:'#3B5FE0',
-
-      name:
-        'Reliance — Waterfield Road',
-
-      addr:
-        'Waterfield Road, Bandra West',
-
-      dist:2.9,
-
-      x:15,
-
-      y:20,
-
-      queue:6,
-
-      avgService:3,
-
-      pumps:{
-        active:2,
-        total:2
-      },
-
-      fuels:{
-
-        Petrol:{
-          price:105.20,
-          stock:'ok'
-        },
-
-        Diesel:{
-          price:92.75,
-          stock:'out'
-        }
-
-      }
-
-    },
-
-
-    {
-
-      id:'s6',
-
-      brand:'Indian Oil',
-
-      brandColor:'#E4572E',
-
-      name:
-        'Indian Oil — Carter Road',
-
-      addr:
-        'Carter Road, Bandra West',
-
-      dist:3.4,
-
-      x:85,
-
-      y:82,
-
-      queue:11,
-
-      avgService:4,
-
-      pumps:{
-        active:3,
-        total:5
-      },
-
-      fuels:{
-
-        Petrol:{
-          price:104.50,
-          stock:'ok'
-        },
-
-        Diesel:{
-          price:92.10,
-          stock:'ok'
-        },
-
-        CNG:{
-          price:76.00,
-          stock:'ok'
-        }
-
-      }
-
     }
+  },
 
-  ];
+
+  {
+    id: 's2',
+    brand: 'HP',
+    brandColor: '#F7941D',
+
+    name: 'HP Petrol Pump — Turner Road',
+    addr: '3/4, Junction of S.V. Road & Turner Road, Bandra West, Mumbai, Maharashtra 400050',
+
+    latitude: 19.0608,
+    longitude: 72.8358,
+
+    dist: 1.1,
+    x: 60,
+    y: 30,
+
+    queue: 3,
+    avgService: 3,
+
+    pumps: {
+      active: 4,
+      total: 4
+    },
+
+    fuels: {
+      Petrol: {
+        price: 104.62,
+        stock: 'ok'
+      },
+      Diesel: {
+        price: 92.30,
+        stock: 'ok'
+      }
+    }
+  },
+
+
+  {
+    id: 's3',
+    brand: 'Bharat Petroleum',
+    brandColor: '#0072BC',
+
+    name: 'Bharat Petroleum — SV Road',
+    addr: 'S.V. Road, Khar West, Mumbai, Maharashtra 400052',
+
+    latitude: 19.0680,
+    longitude: 72.8375,
+
+    dist: 1.8,
+    x: 20,
+    y: 70,
+
+    queue: 14,
+    avgService: 5,
+
+    pumps: {
+      active: 2,
+      total: 4
+    },
+
+    fuels: {
+      Petrol: {
+        price: 104.45,
+        stock: 'low'
+      },
+      Diesel: {
+        price: 91.95,
+        stock: 'ok'
+      },
+      CNG: {
+        price: 75.80,
+        stock: 'ok'
+      }
+    }
+  },
+
+
+  {
+    id: 's4',
+    brand: 'Shell',
+    brandColor: '#FBCE07',
+
+    name: 'Shell — Hill Road',
+    addr: 'Junction of S.V. Road & Hill Road, Bandra West, Mumbai, Maharashtra 400050',
+
+    latitude: 19.0558,
+    longitude: 72.8309,
+
+    dist: 2.3,
+    x: 75,
+    y: 60,
+
+    queue: 0,
+    avgService: 4,
+
+    pumps: {
+      active: 3,
+      total: 3
+    },
+
+    fuels: {
+      Petrol: {
+        price: 106.10,
+        stock: 'ok'
+      },
+      Diesel: {
+        price: 93.40,
+        stock: 'ok'
+      },
+      EV: {
+        price: 18.50,
+        stock: 'ok'
+      }
+    }
+  },
+
+
+  {
+    id: 's5',
+    brand: 'Reliance',
+    brandColor: '#3B5FE0',
+
+    name: 'Reliance — Waterfield Road',
+    addr: 'Waterfield Road, Bandra West, Mumbai, Maharashtra 400050',
+
+    latitude: 19.0590,
+    longitude: 72.8315,
+
+    dist: 2.9,
+    x: 15,
+    y: 20,
+
+    queue: 6,
+    avgService: 3,
+
+    pumps: {
+      active: 2,
+      total: 2
+    },
+
+    fuels: {
+      Petrol: {
+        price: 105.20,
+        stock: 'ok'
+      },
+      Diesel: {
+        price: 92.75,
+        stock: 'out'
+      }
+    }
+  },
+
+
+  {
+    id: 's6',
+    brand: 'Indian Oil',
+    brandColor: '#E4572E',
+
+    name: 'Indian Oil — Carter Road',
+    addr: 'Carter Road, Bandra West, Mumbai, Maharashtra 400050',
+
+    latitude: 19.0605,
+    longitude: 72.8195,
+
+    dist: 3.4,
+    x: 85,
+    y: 82,
+
+    queue: 11,
+    avgService: 4,
+
+    pumps: {
+      active: 3,
+      total: 5
+    },
+
+    fuels: {
+      Petrol: {
+        price: 104.50,
+        stock: 'ok'
+      },
+      Diesel: {
+        price: 92.10,
+        stock: 'ok'
+      },
+      CNG: {
+        price: 76.00,
+        stock: 'ok'
+      }
+    }
+  }
+
+];
 
 
   var FUEL_MODE_PRICE_REF = {
@@ -2138,7 +2074,29 @@ async function updateSaveStationButton(){
   /* =========================
      STATION DETAIL
      ========================= */
+function openGoogleMaps(station){
+  if(!station){
+    alert('Station location not available.');
+    return;
+  }
 
+  if(
+    typeof station.latitude !== 'number' ||
+    typeof station.longitude !== 'number'
+  ){
+    alert('Station coordinates are not available.');
+    return;
+  }
+
+  var url =
+    'https://www.google.com/maps/dir/?api=1' +
+    '&destination=' +
+    encodeURIComponent(
+      station.latitude + ',' + station.longitude
+    );
+
+  window.open(url, '_blank');
+}
   function openDetail(id){
 
     var st=
@@ -2327,6 +2285,13 @@ if(saveStationButton){
     }
   );
 
+}
+var directionsButton = el('btn-directions');
+
+if(directionsButton){
+  directionsButton.addEventListener('click', function(){
+    openGoogleMaps(state.currentStation);
+  });
 }
 
 
